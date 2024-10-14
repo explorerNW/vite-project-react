@@ -1,0 +1,5 @@
+yarn lint
+
+yarn pre-commit
+
+yarn build
