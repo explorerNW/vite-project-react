@@ -36,6 +36,7 @@ export function Login() {
     const [showSlicderCaptcha, setShowSlicderCaptcha] = useState(false);
     const submit = useSubmit();
     const res = useActionData() as { error: { name: string; password: string } };
+    const [showError, setShowError] = useState(true);
     return (
         <>
             <Form>
@@ -48,16 +49,16 @@ export function Login() {
                         <div className='flex flex-col'>
                             <div className="field flex gap-1 w-full">
                                 <span className='icon-[mdi--user] text-[2rem]' style={{ color: "#bcbcbc" }}></span>
-                                <input className='w-full' placeholder='请输入账号名称/手机号码' name='name' value={name} onChange={(event) => { setName(event.target.value); }} />
+                                <input className='w-full' placeholder='请输入账号名称/手机号码' name='name' value={name} onChange={(event) => { setName(event.target.value); if (res?.error?.name) { setShowError(true) }; }} />
                             </div>
-                            <span className="text-red-500 float-left w-full">{res?.error?.name}</span>
+                            <span className="text-red-500 float-left w-full">{showError && res?.error?.name}</span>
                         </div>
                         <div className='flex flex-col'>
                             <div className="field gap-1 w-full">
                                 <span className="icon-[mdi--password] text-[2rem]" style={{ color: "#bcbcbc" }}></span>
-                                <input className='w-full' type="password" placeholder='请输入密码' name='password' value={password} onChange={(event) => { setPassword(event.target.value); }} />
+                                <input className='w-full' type="password" placeholder='请输入密码' name='password' value={password} onChange={(event) => { setPassword(event.target.value); if (res?.error?.password) { setShowError(true) }; }} />
                             </div>
-                            <span className="text-red-500 float-left w-full">{res?.error?.password}</span>
+                            <span className="text-red-500 float-left w-full">{showError && res?.error?.password}</span>
                         </div>
                     </div>
                     <div>
