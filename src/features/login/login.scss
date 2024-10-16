@@ -40,9 +40,10 @@ input {
 }
 
 .rc-slider-captcha {
-    background-color: #5e85c0;
+    background-color: white;
+    border-radius: 3px;
     position: fixed;
-    top: 50%;
+    top: 48%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
