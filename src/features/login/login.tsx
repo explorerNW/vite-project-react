@@ -5,6 +5,7 @@ import ImageBg from '../../assets/1bg@2x.7146d57f.jpg';
 import ImagePuzzle from '../../assets/1puzzle@2x.png';
 import { SetStateAction, useState } from 'react';
 import { ActionFunctionArgs, Form, json, redirect, useActionData, useSubmit } from 'react-router-dom';
+import { Button } from 'antd';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
@@ -60,7 +61,7 @@ export function Login() {
                         </div>
                     </div>
                     <div>
-                        <button type="button" className="float-end" onClick={() => { loginCheck(name, password, setShowSlicderCaptcha); }}>登录</button>
+                        <Button type="primary" className="float-end bg-[#5f85c1]" onClick={() => { loginCheck(name, password, setShowSlicderCaptcha); }}>登录</Button>
                     </div>
                 </div>
             </Form>
