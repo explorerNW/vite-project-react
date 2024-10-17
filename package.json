@@ -20,6 +20,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
     "sass": "^1.79.5",
+    "use-immer": "^0.10.0",
     "yarn": "^1.22.22"
   },
   "devDependencies": {

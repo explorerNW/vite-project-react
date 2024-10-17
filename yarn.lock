@@ -3395,6 +3395,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+use-immer@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/use-immer/-/use-immer-0.10.0.tgz#ed23afd424454604cb42bc112a455bddba894309"
+  integrity sha512-/eVwNR4TG9Tm/dd+aHYLLaI0FLfYKlkTqKMkn78Ah/EYVzWd/zJIgpkdoFEKbhQJOGo8XN7/mWrTx0exp1c+Ug==
+
 ut2@^1.11.0, ut2@^1.12.0:
   version "1.13.0"
   resolved "https://registry.npmmirror.com/ut2/-/ut2-1.13.0.tgz#a5114d6a0d7b8d7161e6d67f4129bb62f1caaa8b"
