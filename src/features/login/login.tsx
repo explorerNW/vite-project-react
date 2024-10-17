@@ -8,11 +8,13 @@ import { ActionFunctionArgs, Form, json, Navigate, useActionData, useSubmit } fr
 import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/user-login';
+import { login as loginApi } from './login.api';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
-    const data = Object.fromEntries(formData);
-    if (data.name === 'admin' && data.password === 'admin@me') {
+    const data = Object.fromEntries(formData) as { name: string; password: string };
+    const res = await loginApi(data.name, data.password);
+    if (res.success && res.login_success) {
         return json({ success: true });
     } else {
         return json({ error: { password: "password not correct" } });
@@ -58,7 +60,7 @@ export function Login() {
                         <div className='flex flex-col'>
                             <div className="field flex gap-1 w-full">
                                 <span className='icon-[mdi--user] text-[2rem]' style={{ color: "#bcbcbc" }}></span>
-                                <input className='w-full' placeholder='请输入账号名称/手机号码' name='name' value={name} onChange={(event) => { setName(event.target.value); if (res?.error.name) { setShowError(false); } }} />
+                                <input className='w-full' placeholder='请输入Email/手机号码' name='name' value={name} onChange={(event) => { setName(event.target.value); if (res?.error.name) { setShowError(false); } }} />
                             </div>
                             <span className="text-red-500 float-left w-full">{showError && res?.error?.name}</span>
                         </div>
