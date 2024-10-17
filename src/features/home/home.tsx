@@ -1,5 +1,7 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import './home.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../redux/user-login';
 
 export const loader = () => {
     return {};
@@ -10,6 +12,14 @@ const homeNavList = ['upload-file', 'device-control',];
 
 export default function Home() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const userLogin = useSelector((state: { login: {value: boolean} }) => {
+        return state.login.value
+    });
+
+    if (!userLogin) {
+        return <Navigate to={"/login"}/>
+    }
     return (
         <>
             <div className="flex flex-col flex-l-1 w-full h-full bg-white">
@@ -24,7 +34,7 @@ export default function Home() {
                                 })
                             }
                         </ul>
-                        <span className="cursor-pointer hover:text-[#eab308]" onClick={() => navigate('/login')}>logout</span>
+                        <span className="cursor-pointer hover:text-[#eab308]" onClick={() => { dispatch(logout()); }}>logout</span>
                     </div>
                 </div>
                 <div className='flex-l-1 relative p-4'>
