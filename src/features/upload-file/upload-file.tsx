@@ -1,6 +1,8 @@
 import { Button } from "antd";
 import { useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { decreament, increament } from "../../redux/counter-slice";
+import { logout } from "../../redux/user-login";
 
 export const loader = () => {
     return {};
@@ -37,6 +39,22 @@ export default function UploadFile() {
     const [completed, setCompleted] = useState(0);
     const [name, setName] = useState('');
     const [list, updateList] = useState<{id: number; name: string}[]>([]);
+    const count = useSelector((state: { counter: {value: number} }) => state.counter.value);
+    const dispatch = useDispatch();
+    const [countDown, setcountDown] = useState(5);
+
+    const Counter = () => {
+        return (
+            <>
+                <div className="flex items-center gap-2">
+                    <Button type="primary" onClick={()=>dispatch(decreament())} >-</Button>
+                    <span>{count}</span>
+                    <Button type="primary" onClick={()=>dispatch(increament())} >+</Button>
+                </div>
+            </>
+        );
+    };
+
     return (
         <>
             <h2>UploadFile</h2>
@@ -90,6 +108,23 @@ export default function UploadFile() {
                         })
                     }
                 </ul>
+            </div>
+            <div className="mt-2">
+                    <Counter />
+            </div>
+            <div>
+                <Button onClick={() => {
+                    const intervalue = setInterval(()=>{
+                        setcountDown((value) => {
+                            if (value < 2) {
+                                clearInterval(intervalue);
+                                dispatch(logout());
+                            }
+                            return value - 1;
+                        });
+                    }, 1000);
+                }
+                }>logout {countDown}s</Button>
             </div>
         </>
     );

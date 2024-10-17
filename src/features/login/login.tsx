@@ -4,14 +4,16 @@ import './login.scss';
 import ImageBg from '../../assets/1bg@2x.7146d57f.jpg';
 import ImagePuzzle from '../../assets/1puzzle@2x.png';
 import { SetStateAction, useState } from 'react';
-import { ActionFunctionArgs, Form, json, redirect, useActionData, useSubmit } from 'react-router-dom';
+import { ActionFunctionArgs, Form, json, Navigate, useActionData, useSubmit } from 'react-router-dom';
 import { Button } from 'antd';
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/user-login';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
     if (data.name === 'admin' && data.password === 'admin@me') {
-        return redirect('/home');
+        return json({ success: true });
     } else {
         return json({ error: { password: "password not correct" } });
     }
@@ -35,8 +37,15 @@ export function Login() {
     const [password, setPassword] = useState('');
     const [showSlicderCaptcha, setShowSlicderCaptcha] = useState(false);
     const submit = useSubmit();
-    const res = useActionData() as { error: { name: string; password: string } };
+    const res = useActionData() as { success: boolean; error: { name: string; password: string } };
     const [showError, setShowError] = useState(true);
+
+    const dispatch = useDispatch();
+
+    if (res?.success) {
+        dispatch(login());
+        return <Navigate to={"/home"} />
+    }
     return (
         <>
             <Form>
@@ -49,14 +58,14 @@ export function Login() {
                         <div className='flex flex-col'>
                             <div className="field flex gap-1 w-full">
                                 <span className='icon-[mdi--user] text-[2rem]' style={{ color: "#bcbcbc" }}></span>
-                                <input className='w-full' placeholder='请输入账号名称/手机号码' name='name' value={name} onChange={(event) => { setName(event.target.value); if (res?.error?.name) { setShowError(() => false) }; }} />
+                                <input className='w-full' placeholder='请输入账号名称/手机号码' name='name' value={name} onChange={(event) => { setName(event.target.value); if (res?.error.name) { setShowError(false); } }} />
                             </div>
                             <span className="text-red-500 float-left w-full">{showError && res?.error?.name}</span>
                         </div>
                         <div className='flex flex-col'>
                             <div className="field gap-1 w-full">
                                 <span className="icon-[mdi--password] text-[2rem]" style={{ color: "#bcbcbc" }}></span>
-                                <input className='w-full' type="password" placeholder='请输入密码' name='password' value={password} onChange={(event) => { setPassword(event.target.value); if (res?.error?.password) { setShowError(() => false) }; }} />
+                                <input className='w-full' type="password" placeholder='请输入密码' name='password' value={password} onChange={(event) => { setPassword(event.target.value); if (res?.error.password) { setShowError(false); } }} />
                             </div>
                             <span className="text-red-500 float-left w-full">{showError && res?.error?.password}</span>
                         </div>
@@ -83,6 +92,7 @@ export function Login() {
                                     setShowSlicderCaptcha(false);
                                     submit({ name, password }, { method: "post", action: "/login" });
                                     setPassword('');
+                                    setShowError(true);
                                 }
                                 return result;
                             }}

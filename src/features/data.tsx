@@ -1,5 +1,3 @@
-import { createContext } from "react";
-
 export type User = {
     id: string;
     firstName: string;
@@ -19,5 +17,3 @@ export const currentUser = {
     sex: 'male',
     income: 1000000
 };
-
-export const userLogin = createContext<boolean>(false);
