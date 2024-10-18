@@ -3,9 +3,11 @@ export type User = {
     firstName: string;
     middleName: string;
     lastName: string;
+    fullName: string;
     age: number;
     sex: 'male' | 'female';
     income: number;
+    [key: string]: string | number;
 };
 
 export const currentUser = {

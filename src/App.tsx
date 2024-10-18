@@ -1,10 +1,5 @@
 import './App.scss'
-import { Login } from './features/login/login'
-
-export const loader = () => {
-  console.log('app loader');
-  return {};
-}
+import Login from './features/login/login';
 
 function App() {
 

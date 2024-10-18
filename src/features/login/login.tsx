@@ -4,21 +4,33 @@ import './login.scss';
 import ImageBg from '../../assets/1bg@2x.7146d57f.jpg';
 import ImagePuzzle from '../../assets/1puzzle@2x.png';
 import { SetStateAction, useState } from 'react';
-import { ActionFunctionArgs, Form, json, Navigate, useActionData, useSubmit } from 'react-router-dom';
+import { ActionFunctionArgs, Form, json, Navigate, useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/user-login';
-import { login as loginApi } from './login.api';
+import { getCurrentUser, login as loginApi } from './login.api';
+import { User } from '../data';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData) as { name: string; password: string };
     const res = await loginApi(data.name, data.password);
     if (res.success && res.login_success) {
-        return json({ success: true });
+        localStorage.setItem('user_id', res.user_id);
+        return json({ success: true, userId: res.user_id });
     } else {
         return json({ error: { password: "password not correct" } });
     }
+}
+
+export const loader = async () => {
+    const userId = localStorage.getItem('user_id');
+    if (userId) {
+        const user = await getCurrentUser(userId);
+        return json({ user });
+    }
+
+    return json({ userLogout: true });
 }
 
 const verifyCaptcha = async (data: { x: number }) => {
@@ -34,19 +46,25 @@ const loginCheck = (name: string, password: string, setShowSlicderCaptcha: { (va
     }
 }
 
-export function Login() {
+export const cleanStorage = () => {
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('token');
+}
+
+export default function Login() {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [showSlicderCaptcha, setShowSlicderCaptcha] = useState(false);
     const submit = useSubmit();
-    const res = useActionData() as { success: boolean; error: { name: string; password: string } };
+    const res = useActionData() as { success: boolean; currentUser: User; error: { name: string; password: string } };
     const [showError, setShowError] = useState(true);
+    const loaderData = useLoaderData() as { user: User, userLogout: boolean };
 
     const dispatch = useDispatch();
 
-    if (res?.success) {
+    if (res?.success || loaderData?.user?.id) {
         dispatch(login());
-        return <Navigate to={"/home"} />
+        return(<Navigate to={"/home"}></Navigate>);
     }
     return (
         <>
