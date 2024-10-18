@@ -3,16 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 export const userLogin = createSlice({
     name: 'userLogin',
     initialState: {
-        value: false
+        userLogin: false,
+        currentUser: {}
     },
     reducers: {
         login: (state) => { 
-            state.value = true 
+            state.userLogin = true 
         },
-        logout: (state) => { state.value = false },
+        logout: (state) => { state.userLogin = false },
+        currentUser: (state, action) => { state.currentUser = action.payload }
     }
 });
 
-export const { login, logout } = userLogin.actions;
+export const { login, logout, currentUser } = userLogin.actions;
 
 export default userLogin.reducer;

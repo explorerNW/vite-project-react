@@ -3,16 +3,13 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { decreament, increament } from "../../redux/counter-slice";
 import { logout } from "../../redux/user-login";
+import { getCurrentUser } from "../login/login.api";
+import { User } from "../data";
+import { cleanStorage } from "../login/login";
+import { useNavigate } from "react-router-dom";
 
 export const loader = () => {
     return {};
-}
-
-type User = {
-    name: string;
-    age: number;
-    income: number;
-    [key: string]: string | number;
 }
 
 const timeout = (ms: number) => {
@@ -31,7 +28,9 @@ const clickHandler = async (pending: number, setPending: React.Dispatch<React.Se
 
 export default function UploadFile() {
     const [obj, setObj] = useState({
-        name: 'Nie Wang',
+        firstName: 'Nie',
+        lastName: 'Wang',
+        fullName: 'Nie Wang',
         age: 29,
         income: 1000000
     } as User);
@@ -40,8 +39,11 @@ export default function UploadFile() {
     const [name, setName] = useState('');
     const [list, updateList] = useState<{id: number; name: string}[]>([]);
     const count = useSelector((state: { counter: {value: number} }) => state.counter.value);
+    const userId = useSelector((state: { login: { currentUser: User } }) => state.login.currentUser.id);
     const dispatch = useDispatch();
     const [countDown, setcountDown] = useState(5);
+    const [currentUser, setCurrentUser] = useState<User>({} as User);
+    const navigate = useNavigate();
 
     const Counter = () => {
         return (
@@ -73,10 +75,12 @@ export default function UploadFile() {
             </div>
             <Button onClick={() => {
                 setObj({
-                    name: 'Nie Wang',
-                    age: 28,
+                    firstName: 'Nie',
+                    lastName: 'Wang',
+                    fullName: 'Nie Wang',
+                    age: 29,
                     income: 1000000
-                });
+                } as User);
 
                 setTimeout(() => {
                     console.log(obj);
@@ -119,12 +123,24 @@ export default function UploadFile() {
                             if (value < 2) {
                                 clearInterval(intervalue);
                                 dispatch(logout());
+                                cleanStorage();
+                                navigate("/login");
                             }
                             return value - 1;
                         });
                     }, 1000);
                 }
                 }>logout {countDown}s</Button>
+            </div>
+            <div>
+                <Button onClick={ async ()=> { const user = await getCurrentUser(userId); setCurrentUser(user); }}>getCurrentUser</Button>
+                <ul>
+                    {
+                        Object.keys(currentUser).map((field, key)=>{
+                            return <li key={key}>{field}: { currentUser[field] }</li>
+                        })
+                    }
+                </ul>
             </div>
         </>
     );

@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import App, { loader as appLoader } from "./App";
+import App from "./App";
 import ErrorPage from "./error-page";
 import { loader as homeLoader } from "./features/home/home";
-import { action as loginAction } from './features/login/login';
+import { loader as loginLoader, action as loginAction } from './features/login/login';
 import { lazy, Suspense } from "react";
 
 const Home = lazy(() => import("./features/home/home"));
@@ -13,12 +13,13 @@ const router = createBrowserRouter([
     {
         path: '',
         element: <App />,
-        loader: appLoader,
+        loader: loginLoader,
         errorElement: <ErrorPage />
     },
     {
         path: 'login',
         element: <App />,
+        loader: loginLoader,
         action: loginAction
     },
     {
