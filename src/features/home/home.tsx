@@ -1,4 +1,4 @@
-import { json, Navigate, Outlet, useLoaderData, useNavigate } from 'react-router-dom';
+import { json, Navigate, Outlet, useLoaderData, useNavigate, useSubmit } from 'react-router-dom';
 import './home.scss';
 import { useDispatch } from 'react-redux';
 import { currentUser, login, logout } from '../../redux/user-login';
@@ -23,6 +23,7 @@ export default function Home() {
     const navigate = useNavigate();
     const loaderData = useLoaderData() as { user: User, userLogout: boolean };
     const dispatch = useDispatch();
+    const submit = useSubmit();
 
     if (loaderData?.user) {
         dispatch(login());
@@ -32,7 +33,7 @@ export default function Home() {
     const logoutHandler = () => {
         cleanStorage();
         dispatch(logout());
-        navigate("/login");
+        submit({ email: loaderData.user.email, logout: true }, { method: "POST", action: "/login" });
     }
 
     if (loaderData?.userLogout) {

@@ -39,10 +39,17 @@ export const login = async (email: string, password: string) => {
     instance.defaults.headers.common["Authorization"] = `Bearer ${res.data.access_token}`;
     localStorage.setItem('token', `Bearer ${res.data.access_token}`);
     instance.defaults.headers.common["Content-Type"] = "application/json";
-    return res.data;
+    return res?.data;
 };
+
+export const logout = async (email: string, ) => {
+    const res = await instance.post(`/auth/logout`, { email });
+    instance.defaults.headers.common["Authorization"] = ``;
+    localStorage.setItem('token', '');
+    return res?.data;
+}
 
 export const getCurrentUser = async (id: string): Promise<User> => {
     const res = await instance.get(`/user/${id}`);
-    return res.data;
+    return res?.data;
 }
