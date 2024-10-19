@@ -1,5 +1,5 @@
 const environment = {
-    apiHost: '192.168.0.109:9000'
+    apiHost: 's0.v100.vip:16220'
 };
 
 export default environment;

@@ -8,12 +8,16 @@ import { ActionFunctionArgs, Form, json, Navigate, useActionData, useLoaderData,
 import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/user-login';
-import { getCurrentUser, login as loginApi } from './login.api';
+import { getCurrentUser, login as loginApi, logout } from './login.api';
 import { User } from '../data';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
-    const data = Object.fromEntries(formData) as { name: string; password: string };
+    const data = Object.fromEntries(formData) as { name: string; password: string; logout: string; email: string; };
+    if (data.logout && data.email) {
+        await logout(data.email);
+        return json({ userLogin: false });
+    }
     const res = await loginApi(data.name, data.password);
     if (res.success && res.login_success) {
         localStorage.setItem('user_id', res.user_id);
