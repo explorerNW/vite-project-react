@@ -1,10 +1,11 @@
-import { json, Navigate, Outlet, useLoaderData, useNavigate, useSubmit } from 'react-router-dom';
+import { json, Navigate, Outlet, useLoaderData, useLocation, useNavigate, useSubmit } from 'react-router-dom';
 import './home.scss';
 import { useDispatch } from 'react-redux';
 import { currentUser, login, logout } from '../../redux/user-login';
 import { getCurrentUser } from '../login/login.api';
 import { User } from '../data';
 import { cleanStorage } from '../login/login';
+import { useState } from 'react';
 
 export const loader = async () => {
     const userId = localStorage.getItem('user_id');
@@ -24,6 +25,8 @@ export default function Home() {
     const loaderData = useLoaderData() as { user: User, userLogout: boolean };
     const dispatch = useDispatch();
     const submit = useSubmit();
+    const location = useLocation();
+    const [activeRout, setActiveRoute] = useState(location?.state?.activePath);
 
     if (loaderData?.user) {
         dispatch(login());
@@ -48,7 +51,7 @@ export default function Home() {
                             {
                                 navList.map((path, index) => {
                                     return (
-                                        <li className="cursor-pointer hover:text-[#eab308]" onClick={() => navigate(path)} key={index}>{path.toString().replace('/', '').trim()}</li>
+                                        <li className="cursor-pointer hover:text-[#eab308]" onClick={() => { setActiveRoute(path); navigate(path, { state: { activePath: path } }) }} key={index}>{path.toString().replace('/', '').trim()}</li>
                                     );
                                 })
                             }
@@ -62,7 +65,7 @@ export default function Home() {
                             {
                                 homeNavList.map((path, index) => {
                                     return (
-                                        <li className="cursor-pointer hover:text-[#eab308]" onClick={() => navigate(path)} key={index}>{path.toString().replace('/', '').trim()}</li>
+                                        <li className={(path === activeRout) ? 'cursor-pointer active' : 'cursor-pointer'} onClick={() => { setActiveRoute(path); navigate(path, { state: { activePath: path } }); }} key={index}>{path.toString().replace('/', '').trim()}</li>
                                     );
                                 })
                             }

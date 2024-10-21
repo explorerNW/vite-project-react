@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { decreament, increament } from "../../redux/counter-slice";
 import { logout } from "../../redux/user-login";
@@ -7,6 +7,7 @@ import { getCurrentUser } from "../login/login.api";
 import { User } from "../data";
 import { cleanStorage } from "../login/login";
 import { useNavigate } from "react-router-dom";
+import TextArea from "antd/es/input/TextArea";
 
 export const loader = () => {
     return {};
@@ -24,6 +25,13 @@ const clickHandler = async (pending: number, setPending: React.Dispatch<React.Se
     setPending(pending - 1);
     setCompleted(completed + 1);
 
+}
+
+const reducerLocal = (str: string, action: { type: string; value: string }) =>{
+    if (action.type === "change") {
+        str = action.value
+    }
+    return str;
 }
 
 export default function UploadFile() {
@@ -44,6 +52,7 @@ export default function UploadFile() {
     const [countDown, setcountDown] = useState(5);
     const [currentUser, setCurrentUser] = useState<User>({} as User);
     const navigate = useNavigate();
+    const [str, dispatchLocal] = useReducer(reducerLocal, '');
 
     const Counter = () => {
         return (
@@ -142,6 +151,8 @@ export default function UploadFile() {
                     }
                 </ul>
             </div>
+            reducers: { str }
+            <TextArea value={str} onChange={ (e) => dispatchLocal({ type: 'change', value: e.target.value })}></TextArea>
         </>
     );
 }
