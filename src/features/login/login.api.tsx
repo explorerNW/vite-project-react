@@ -26,18 +26,21 @@ instance.interceptors.response.use(function (response) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     console.log(error);
-    if (error.response.data.message.authorization === false && error.response.data.message.expired || error.response.data.message.authorization === false) {
-        localStorage.removeItem('user_id');
-        localStorage.removeItem('token');
-        window.location.href = '/login';
+    if(error?.response?.data?.message) {
+        const message = error?.response?.data?.message;
+        if (message?.authorization === false && message?.expired || message?.authorization === false) {
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
     }
     return Promise.reject(error);
 });
 
 export const login = async (email: string, password: string) => {
     const res = await instance.post(`/auth/login`, { user: { email, password } });
-    instance.defaults.headers.common["Authorization"] = `Bearer ${res.data.access_token}`;
-    localStorage.setItem('token', `Bearer ${res.data.access_token}`);
+    instance.defaults.headers.common["Authorization"] = `Bearer ${res?.data?.access_token}`;
+    localStorage.setItem('token', `Bearer ${res?.data?.access_token}`);
     instance.defaults.headers.common["Content-Type"] = "application/json";
     return res?.data;
 };
