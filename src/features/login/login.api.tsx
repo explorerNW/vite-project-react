@@ -31,7 +31,7 @@ instance.interceptors.response.use(function (response) {
         if (message?.authorization === false && message?.expired || message?.authorization === false) {
             localStorage.removeItem('user_id');
             localStorage.removeItem('token');
-            window.location.href = '/login';
+            window.location.href = '/session-timeout';
         }
     }
     return Promise.reject(error);

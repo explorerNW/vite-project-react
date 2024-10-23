@@ -8,13 +8,17 @@ export interface IChipInfo {
 }
 
 export const lightsUp = async () => {
-    return await instance.post('/iot/lights-up');
+    return await instance.post('/iot/lights-up').catch((e)=> {throw new Error(e)});
 }
 
 export const lightsDown = async () => {
-    return await instance.post('/iot/lights-down');
+    return await instance.post('/iot/lights-down').catch((e)=> {throw new Error(e)});
 }
 
 export const getChipInfo = async ():Promise<IChipInfo> => {
-    return (await instance.get('/iot/chip-info')).data.chip_info;
+    return (await instance.get('/iot/chip-info').catch((e)=> {throw new Error(e)}))?.data?.chip_info;
+}
+
+export const getLightsStatus = async () => {
+    return (await instance.post('/iot/light-status').catch((e)=> {throw new Error(e)}))?.data?.lights_up;
 }
