@@ -6,6 +6,7 @@ import { getCurrentUser } from '../login/login.api';
 import { User } from '../data';
 import { cleanStorage } from '../login/login';
 import { useState } from 'react';
+import ConfirmModal from '../modal/confirm-modal';
 
 export const loader = async () => {
     const userId = localStorage.getItem('user_id');
@@ -27,6 +28,7 @@ export default function Home() {
     const submit = useSubmit();
     const location = useLocation();
     const [activeRout, setActiveRoute] = useState(location?.state?.activePath);
+    const [showLogout, setShowLogout] = useState(false);
 
     if (loaderData?.user) {
         dispatch(login());
@@ -34,6 +36,7 @@ export default function Home() {
     }
 
     const logoutHandler = () => {
+        setShowLogout(true);
         cleanStorage();
         dispatch(logout());
         submit({ email: loaderData.user.email, logout: true }, { method: "POST", action: "/login" });
@@ -42,6 +45,7 @@ export default function Home() {
     if (loaderData?.userLogout) {
         return <Navigate to={"/login"} />
     }
+
     return (
         <>
             <div className="flex flex-col flex-l-1 w-full h-full bg-white home">
@@ -56,7 +60,10 @@ export default function Home() {
                                 })
                             }
                         </ul>
-                        <span className="cursor-pointer hover:text-[#eab308]" onClick={logoutHandler}>logout</span>
+                        <span className="cursor-pointer hover:text-[#eab308]" onClick={() => setShowLogout(true)}>logout</span>
+                        <ConfirmModal title="登出" isModalOpen={showLogout} handleOk={logoutHandler} handleCancel={() => setShowLogout(false)} >
+                            退出登录?
+                        </ConfirmModal>
                     </div>
                 </div>
                 <div className='flex-l-1 relative p-4'>
