@@ -16,48 +16,51 @@ export const action = async () => {
 export default function DeviceControl() {
     const [chipInfo, setChipInfo] = useState<IChipInfo>({} as IChipInfo);
     const [lightStatus, setLightStatus] = useState(false);
-    const [changed, setChanged] = useState(false);
     const online = useOnlineStatus();
-    const ref = useRef({ dataLoaded: false });
+    const ref = useRef({ changed: false, dataLoaded: false });
     const [loading, setLoading] = useState({ loadingChipInfo: false, loadingLightsStatus: false });
     const [notificationApi, contextHolder] = notification.useNotification();
 
     const fetchLightsStatus = async () => {
+        updateLoadingLightsStatus(true);
+        const lightStatus = await getLightsStatus().catch(()=>{
+            updateLoadingLightsStatus(false);
+            notificationApi.info({
+                message: '服务器-api异常',
+                description: ''
+            });
+        });
+        setLightStatus(lightStatus === 1);
+        updateLoadingLightsStatus(false);
+    }
+
+    const updateLoadingLightsStatus = (value: boolean) => {
         setLoading((state) => {
             return {
                 ...state,
-                loadingLightsStatus: true
+                loadingLightsStatus: value
             }
         });
-        const lightStatus = await getLightsStatus();
-        setLightStatus(lightStatus === 1);
+    }
+
+    const updateLoadingChipInfo = (value: boolean) => {
         setLoading((state) => {
             return {
                 ...state,
-                loadingLightsStatus: false
+                loadingChipInfo: value
             }
         });
     }
 
     useEffect(() => {
-        if (changed) {
+        if (ref.current.changed) {
             if (lightStatus) {
                 lightsUp().then(() => {
                     setTimeout(() => {
-                        setLoading((state) => {
-                            return {
-                                ...state,
-                                loadingLightsStatus: false
-                            }
-                        });
+                        updateLoadingLightsStatus(false);
                     }, 500);
                 }).catch(() => {
-                    setLoading((state) => {
-                        return {
-                            ...state,
-                            loadingLightsStatus: false
-                        }
-                    });
+                    updateLoadingLightsStatus(false);
                     notificationApi.info({
                         message: '服务器-api异常',
                         description: ''
@@ -66,20 +69,10 @@ export default function DeviceControl() {
             } else {
                 lightsDown().then(() => {
                     setTimeout(() => {
-                        setLoading((state) => {
-                            return {
-                                ...state,
-                                loadingLightsStatus: false
-                            }
-                        });
+                        updateLoadingLightsStatus(false);
                     }, 500);
                 }).catch(() => {
-                    setLoading((state) => {
-                        return {
-                            ...state,
-                            loadingLightsStatus: false
-                        }
-                    });
+                    updateLoadingLightsStatus(false);
                     notificationApi.info({
                         message: '服务器-api异常',
                         description: ''
@@ -92,7 +85,7 @@ export default function DeviceControl() {
             ref.current.dataLoaded = true;
         }
         return () => {
-
+            
         }
     }, [lightStatus, online]);
 
@@ -106,13 +99,8 @@ export default function DeviceControl() {
                 if (loading.loadingChipInfo) {
                     return;
                 }
-                setLoading((state) => {
-                    return {
-                        ...state,
-                        loadingChipInfo: true
-                    }
-                });
-                const chipIfo = await getChipInfo().catch(()=>{
+                updateLoadingChipInfo(true);
+                const chipIfo = await getChipInfo().catch(() => {
                     notificationApi.info({
                         message: '服务器-api异常',
                         description: ''
@@ -122,12 +110,7 @@ export default function DeviceControl() {
                 });
                 setChipInfo(() => chipIfo);
                 setTimeout(() => {
-                    setLoading((state) => {
-                        return {
-                            ...state,
-                            loadingChipInfo: false
-                        }
-                    });
+                    updateLoadingChipInfo(false);
                 }, 500);
             }
             }>fetch Chip Information</Button>
@@ -160,7 +143,7 @@ export default function DeviceControl() {
                         }
                     });
                     setLightStatus((light) => !light);
-                    setChanged(true);
+                    ref.current.changed = true;
                 }}>{lightStatus ? '关' : '开'} 灯</Button>
             </div>
         </>

@@ -1,20 +1,14 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 export function useOnlineStatus() {
-    const [online, setOnline] = useState(true);
-    useEffect(() => {
-        function handler() {
-            setOnline(navigator.onLine);
-        }
-
-        window.addEventListener("online", handler);
-        window.addEventListener("offline", handler);
+    function subscribe(callback: () => void) {
+        window.addEventListener("online", callback);
+        window.addEventListener("offline", callback);
 
         return () => {
-            window.removeEventListener("online", handler);
-            window.removeEventListener("offline", handler);
+            window.removeEventListener("online", callback);
+            window.removeEventListener("offline", callback);
         }
-    });
-
-    return online;
+    }
+    return useSyncExternalStore(subscribe, () => navigator.onLine, () => true);
 }
