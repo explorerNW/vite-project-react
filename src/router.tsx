@@ -6,11 +6,14 @@ import { loader as loginLoader, action as loginAction } from './features/login/l
 import { loader as deviceControlLoader, action as deviceControlAction } from './features/device-control/device-control';
 import { loader as uploadFileLoader } from './features/upload-file/upload-file';
 import { lazy, Suspense } from "react";
+import Skeleton from "antd/es/skeleton";
 
 const Home = lazy(() => import("./features/home/home"));
 const UploadFile = lazy(() => import("./features/upload-file/upload-file"));
 const DeviceControl = lazy(() => import("./features/device-control/device-control"));
 const SessionTimeout = lazy(() => import("./features/error-page/session-timeout"));
+const Threejs = lazy(() => import('./features/threejs/threejs'));
+const Temp = lazy(()=> import('./features/temp'));
 
 const router = createBrowserRouter([
     {
@@ -28,27 +31,37 @@ const router = createBrowserRouter([
     },
     {
         path: 'home',
-        element: <Suspense fallback="加载中..." ><Home /></Suspense>,
+        element: <Suspense fallback={<Skeleton />} ><Home /></Suspense>,
         loader: homeLoader,
         children: [
             {
                 path: 'upload-file',
                 loader: uploadFileLoader,
-                element: <Suspense fallback="加载中..." ><UploadFile /></Suspense>,
+                element: <Suspense fallback={<Skeleton />} ><UploadFile /></Suspense>,
                 errorElement: <ErrorPage />,
             },
             {
                 path: 'device-control',
                 loader: deviceControlLoader,
                 action: deviceControlAction,
-                element: <Suspense fallback="加载中..." ><DeviceControl /></Suspense>,
+                element: <Suspense fallback={<Skeleton />} ><DeviceControl /></Suspense>,
                 errorElement: <ErrorPage />,
+            },
+            {
+                path: 'threejs',
+                element: <Suspense fallback={<Skeleton />}><Threejs /></Suspense>,
+                errorElement: <ErrorPage />
+            },
+            {
+                path: 'temp',
+                element: <Suspense fallback={<Skeleton />}><Temp /></Suspense>,
+                errorElement: <ErrorPage />
             }
         ]
     },
     {
         path: 'session-timeout',
-        element: <Suspense fallback="加载中.."><SessionTimeout /></Suspense>
+        element: <Suspense fallback={<Skeleton />}><SessionTimeout /></Suspense>
     }
 ]);
 

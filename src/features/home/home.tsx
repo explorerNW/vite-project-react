@@ -19,7 +19,7 @@ export const loader = async () => {
 }
 
 const navList = ['/home'];
-const homeNavList = ['upload-file', 'device-control',];
+const homeNavList = ['upload-file', 'device-control'];
 
 export default function Home() {
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ export default function Home() {
     return (
         <>
             <div className="flex flex-col flex-l-1 w-full h-full bg-white home">
-                <div className='h-[2rem] leading-8 header bg-[#5e85c0]'>
+                <div className='h-[2rem] leading-8 header bg-[var(--background-color-theme)]'>
                     <div className="flex items-center justify-between pr-4 text-white">
                         <ul className="flex gap-4 ml-[8rem]">
                             {
@@ -80,7 +80,7 @@ export default function Home() {
                     </div>
                     <Outlet />
                 </div>
-                <div className='h-[2rem] leading-8 bg-[#5e85c0]'></div>
+                <div className='h-[2rem] leading-8 bg-[var(--background-color-theme)]'></div>
             </div>
         </>
     );
