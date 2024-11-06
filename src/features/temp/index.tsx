@@ -38,7 +38,7 @@ const Search = memo(forwardRef(function Search(props: { search: string }, ref) {
                     return Array(100).fill(true).map((item, index) => {
                         return {
                             index,
-                            value: `item:${index}`
+                            value: `${item}item:${index}`
                         };
                     });
                 });
@@ -210,7 +210,7 @@ export default function Temp() {
                 {
                     Array(100).fill(true).map((item, index) => {
                         return (
-                            <span key={index}>{index}</span>
+                            <span key={index}>{item ?? index}</span>
                         );
                     })
                 }
