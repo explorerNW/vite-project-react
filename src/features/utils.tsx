@@ -1,4 +1,4 @@
-import { ReactNode, useInsertionEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { memo, ReactNode, useInsertionEffect, useSyncExternalStore } from "react";
 
 export function useOnlineStatus() {
     function subscribe(callback: () => void) {
@@ -36,35 +36,15 @@ function getStyleForRule(rule: string) {
     }
 }
 
-export function Tooltip({ position, children }: { position: { x: number, y: number }, children: ReactNode }) {
-
-    const ref = useRef(null);
-    const [height, setHeight] = useState(0);
-
-    useLayoutEffect(() => {
-        if (ref.current) {
-            const { height } = (ref.current as HTMLElement).getBoundingClientRect();
-            setHeight(height);
-        }
-    }, [height]);
-
-    let x = 0;
-    let y = 0;
-
-    if (position !== null) {
-        x = position.x;
-        y = height;
-    }
-
+export const Tooltip = memo(function Tooltip({ position, children }: { position: { x: number, y: number }, children: ReactNode }) {
     return (
         <>
-            <div className="absolute border"
-                ref={ref}
+            <div className="absolute border bg-[white] z-10"
                 style={
                     {
                         top: 0,
                         left: 0,
-                        transform: `translate3d(${x}px, ${y}px, 0)`,
+                        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
                     }
                 }
             >
@@ -72,7 +52,7 @@ export function Tooltip({ position, children }: { position: { x: number, y: numb
             </div>
         </>
     );
-}
+});
 
 export const interval = (delay = 1000, callback: () => void) => {
     let start: number | null = null;

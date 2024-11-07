@@ -36,7 +36,7 @@ export default function DeviceControl() {
         }
     });
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!ref.current.dataLoaded) {
             loadingLightsStatusAction();
             ref.current.dataLoaded = true;
@@ -56,22 +56,22 @@ export default function DeviceControl() {
         },
     });
 
-    const { loading: loadingLightsUp, run: lightsUpAction } = useRequest(lightsUp, { manual: true, debounceWait: 200, loadingDelay: 200 });
-    const { loading: loadingLightsDown, run: lightsDownAction } = useRequest(lightsDown, { manual: true, debounceWait: 200, loadingDelay: 200 });
+    const { loading: loadingLightsUp, run: lightsUpAction, error: lightsUpError } = useRequest(lightsUp, { manual: true, debounceWait: 200, loadingDelay: 200 });
+    const { loading: loadingLightsDown, run: lightsDownAction, error: lightsDownError } = useRequest(lightsDown, { manual: true, debounceWait: 200, loadingDelay: 200 });
 
     useUpdateEffect(() => {
-        try {
-            if (lightStatus) {
-                lightsUpAction();
-            } else {
-                lightsDownAction();
-            }
-        } catch (e) {
+        if (lightStatus) {
+            lightsUpAction();
+        } else {
+            lightsDownAction();
+        }
+        if (lightsUpError || lightsDownError) {
             notificationApi.info({
                 message: '服务器-api异常',
-                description: new Error(e as string).message
+                description: (lightsUpError || lightsDownError)?.message
             });
         }
+
     }, [lightStatus]);
 
     return (
