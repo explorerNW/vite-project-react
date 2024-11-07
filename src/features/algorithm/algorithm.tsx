@@ -39,3 +39,64 @@ export function addTowNumbers(numb1: string, numb2: string) {
 
     return result.toString().replace(/,/g, '');
 }
+
+export function lengthOfLongestSubstring( s: string ): number {
+
+    const pre: number[] = [];
+    let [sofar, end] = [0,0];
+  
+    for( let i = 0; i < s.length; i++ ){
+      const ascii = s[i].charCodeAt( 0 );
+      const last = pre[ascii] ?? -1;
+      end = last + end >= i ? ( i - last ) : ( end + 1 );
+  
+      sofar = Math.max( sofar, end );
+      pre[ascii] = i;
+    }
+  
+    return sofar;
+  }
+
+export function maxLenghtOfOne(list: number[]) {
+    let temp = [];
+    for (let i = 0; i < list.length; i++) {
+        if (list[i + 1] === list[i] || i === list.length - 1) {
+            temp.push(i);
+        } else {
+            temp = [];
+        }
+    }
+
+    return temp;
+}
+
+export function moveZero(numbers: number[]) {
+    for (let i = 0; i < numbers.length; i++) {
+        if (numbers[i] === 0) {
+            numbers.push(numbers[i]);
+            if (numbers[i - 1] !== undefined) {
+                numbers = numbers.slice(0, i).concat(numbers.slice(i + 1));
+            } else {
+                numbers = numbers.slice(i + 1);
+            }
+        }
+    }
+
+    return numbers;
+}
+
+export function removeDuplicate(numbers: number[]) {
+    for (let i = 0; i < numbers.length; i++) {
+        if (numbers[i + 1] !== undefined) {
+            if (numbers[i] === numbers[i + 1]) {
+                numbers = numbers.slice(0, i + 1).concat(numbers.slice(i + 2));
+            }
+        } else {
+            if (numbers.find(number => number === numbers[i]) === numbers[i]) {
+                numbers = numbers.slice(0, i);
+            }
+        }
+    }
+    
+    return numbers;
+}
