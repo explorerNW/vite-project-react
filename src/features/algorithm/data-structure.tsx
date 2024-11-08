@@ -150,13 +150,13 @@ export class TreeNode<T> {
 
   BFS(callback: (node: TreeNode<T>) => void, root: TreeNode<T>) {
     const queue = new Queue<TreeNode<T>>();
-    queue.enquee(root);
-    while (!queue.isEmpty) {
-      const currentNode = queue.dequee();
+    queue.enqueue(root);
+    while (!queue.isEmpty()) {
+      const currentNode = queue.dequeue();
       if (currentNode !== undefined) {
-        callback(this);
+        callback(currentNode);
         for (const node of currentNode.children) {
-          queue.enquee(node);
+          queue.enqueue(node);
         }
       }
     }
@@ -192,11 +192,11 @@ export class Tree<T> {
 class Queue<T> {
   channel: T[] = [];
 
-  enquee(node: T) {
+  enqueue(node: T) {
     this.channel.push(node);
   }
 
-  dequee(): T {
+  dequeue(): T {
     return this.channel.shift() as T;
   }
 
@@ -235,14 +235,245 @@ export class BinaryTree<T> {
   insertNode(node: BinaryTreeNode<T>, value: T) {
     if (node.left === null && value < node.value) {
       node.left = new BinaryTreeNode(value);
-    } else if (node.right === null) {
+    } else if (node.right === null && value > node.value) {
       node.right = new BinaryTreeNode(value);
     } else {
       if (node.left && value < node.value) {
         this.insertNode(node.left, value);
       } else {
-        this.insertNode(node.right, value);
+        if (node.right) {
+          this.insertNode(node.right, value);
+        }
       }
+    }
+  }
+
+  search(value: T) {
+    if (this.root) {
+      return this.$Search(value, this.root);
+    } else {
+      return { error: 'empty tree' };
+    }
+  }
+
+  private $Search(value: T, node: BinaryTreeNode<T> | null): BinaryTreeNode<T> | null {
+    if (node === null) {
+      return null;
+    }
+
+    if (node < node.value) {
+      return this.$Search(value, node.left);
+    } else if (value > node.value) {
+      return this.$Search(value, node.right);
+    } else {
+      return node;
+    }
+  }
+
+  removeNode(value: T) {
+    return this.$removeNode(value, this.root);
+  }
+
+  private $removeNode(value: T, node: BinaryTreeNode<T> | null): BinaryTreeNode<T> | null {
+    if (node === null) {
+      return null;
+    }
+    if (value < node.value) {
+      node.left = this.$removeNode(value, node.left);
+      return node;
+    } else if (value > node.value) {
+      node.right = this.$removeNode(value, node.right);
+      return node;
+    } else {
+      if (node.left === null && node.right === null) {
+        node = null;
+        return node;
+      }
+      if (node.left === null) {
+        node = node.right;
+        return node;
+      }
+
+      if (node?.right === null) {
+        node = node.left;
+        return node;
+      }
+
+      const aux = this.findMinNode(node.right);
+      node.value = aux.value;
+      node.right = this.$removeNode(aux.value, node.right);
+
+      return node;
+    }
+
+  }
+
+  findMinNode(node: BinaryTreeNode<T>) {
+    let current = node;
+    while (current && current.left) {
+      current = current.left;
+    }
+
+    return current;
+  }
+
+  RLR(callback: (node: BinaryTreeNode<T>) => void) {
+    if (this.root) {
+      this.$RLR(this.root, callback);
+    }
+  }
+
+  private $RLR(tree: BinaryTreeNode<T>, callback: (node: BinaryTreeNode<T>) => void): void {
+    callback(tree);
+    if (tree.left) {
+      this.$RLR(tree.left, callback);
+    }
+    if (tree.right) {
+      this.$RLR(tree.right, callback);
+    }
+  }
+
+  LRR(callback: (node: BinaryTreeNode<T>) => void) {
+    if (this.root) {
+      this.$LRR(this.root, callback);
+    }
+  }
+
+  private $LRR(tree: BinaryTreeNode<T>, callback: (node: BinaryTreeNode<T>) => void): void {
+    if (tree.left) {
+      this.$LRR(tree.left, callback);
+    }
+    callback(tree);
+    if (tree.right) {
+      this.$LRR(tree.right, callback);
+    }
+  }
+
+  RRL(callback: (node: BinaryTreeNode<T>) => void) {
+    if (this.root) {
+      this.$RRL(this.root, callback);
+    }
+  }
+
+  private $RRL(tree: BinaryTreeNode<T>, callback: (node: BinaryTreeNode<T>) => void): void {
+    if (tree.right) {
+      this.$RRL(tree.right, callback);
+    }
+    callback(tree);
+    if (tree.left) {
+      this.$RRL(tree.left, callback);
+    }
+  }
+
+}
+
+class AVLTreeNode<T> {
+  value: T;
+  left: AVLTreeNode<T> | null = null;
+  right: AVLTreeNode<T> | null = null;
+  height: number = 0;
+
+  constructor(value: T) {
+    this.value = value;
+  }
+
+  updateHeight() {
+    this.height = 1 + Math.max((this.left ? this.left.height : 0), (this.right ? this.right.height : 0));
+  }
+
+  getBalanceFactor() {
+    return (this.left ? this.left.height : 0) - (this.right ? this.right.height : 0);
+  }
+}
+
+export class AVLTree<T> {
+  root: AVLTreeNode<T> | null = null;
+
+  constructor() { }
+
+  setRoot(value: T) {
+    if (this.root === null) {
+      this.root = new AVLTreeNode(value);
+    }
+  }
+
+  addNode(value: T) {
+    this.root = this.$addNode(this.root, value);
+  }
+
+  private $addNode(node: AVLTreeNode<T> | null, value: T) {
+    if (node === null) {
+      return new AVLTreeNode(value);
+    }
+
+    if (value < node.value) {
+      node.left = this.$addNode(node.left, value);
+    } else if (value > node.value) {
+      node.right = this.$addNode(node.right, value);
+    } else {
+      return node;
+    }
+
+    node.updateHeight();
+
+    return this.balanceNode(node);
+  }
+
+  private balanceNode(node: AVLTreeNode<T>) {
+    const balanceFactor = node.getBalanceFactor();
+    if (balanceFactor > 1) {
+      if (node.left && node.left.getBalanceFactor() < 0) {
+        this.rotateLeft(node.left);
+      }
+
+      this.rotateRight(node);
+    } else if (balanceFactor < -1) {
+      if (node.right && node.right.getBalanceFactor() < 0) {
+        this.rotateRight(node.right);
+      }
+
+      this.rotateLeft(node);
+    }
+
+    return node;
+  }
+
+  private rotateLeft(node: AVLTreeNode<T>) {
+    const rightChild = node.right;
+    node.right = rightChild?.left || null;
+    if (rightChild) {
+      rightChild.left = node;
+    }
+    rightChild?.updateHeight();
+
+    return rightChild;
+  }
+
+  private rotateRight(node: AVLTreeNode<T>) {
+    const leftChild = node.left;
+    node.left = leftChild?.left || null;
+    if (leftChild) {
+      leftChild.left = node;
+    }
+
+    leftChild?.updateHeight();
+
+    return leftChild;
+  }
+
+  LRR(callback: (node: AVLTreeNode<T>) => void) {
+    if (this.root) {
+      this.$LRR(this.root, callback);
+    }
+  }
+
+  private $LRR(node: AVLTreeNode<T>, callback: (node: AVLTreeNode<T>) => void) {
+    if (node.left) {
+      this.$LRR(node.left, callback);
+    }
+    callback(node);
+    if (node.right) {
+      this.$LRR(node.right, callback);
     }
   }
 
