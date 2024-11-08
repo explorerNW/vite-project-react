@@ -8,11 +8,11 @@ import store from './store.tsx';
 import { ConfigProvider } from 'antd';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ConfigProvider theme={{ token: { colorPrimary: '#5f85c1' } }}>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </ConfigProvider>
-  </StrictMode>
+    <StrictMode>
+        <ConfigProvider theme={{ token: { colorPrimary: '#5f85c1' } }}>
+            <Provider store={store}>
+                <RouterProvider router={router} />
+            </Provider>
+        </ConfigProvider>
+    </StrictMode>
 );

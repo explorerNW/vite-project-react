@@ -1,9 +1,9 @@
 import './upload-file.scss';
 
 export const loader = () => {
-  return {};
+    return {};
 };
 
 export default function UploadFile() {
-  return <></>;
+    return <></>;
 }
