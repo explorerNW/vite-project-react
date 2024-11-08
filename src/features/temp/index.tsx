@@ -1,6 +1,6 @@
 import { FormEvent, forwardRef, memo, ReactNode, Suspense, useCallback, useDeferredValue, useEffect, useId, useImperativeHandle, useInsertionEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { findItemOfSum, addTowNumbers, maxLenghtOfOne, moveZero, removeDuplicate } from '../algorithm/algorithm';
-import { BinaryTree, DoubleLinkedList, LinkedList, Tree, TreeNode } from '../algorithm/data-structure';
+import { AVLTree, BinaryTree, DoubleLinkedList, LinkedList, Tree, TreeNode } from '../algorithm/data-structure';
 import { Tooltip, useCSS } from '../utils';
 import { Button } from 'antd';
 import { getChipInfo } from '../device-control/device-control.api';
@@ -165,7 +165,7 @@ export default function Temp() {
         linkedList.removeSpecificPosition(10);
         console.log(linkedList);
 
-        const doubleLinkedList = new DoubleLinkedList();
+        const doubleLinkedList = new DoubleLinkedList<number>();
         numb2.split('').forEach(item => {
             doubleLinkedList.insert(Number(item));
         });
@@ -188,11 +188,27 @@ export default function Temp() {
         tree.travelDFS((node) => console.log(node));
         tree.travelBFS((node) => console.log(node));
 
-        const binaryTree = new BinaryTree();
-        binaryTree.add(9);
-        binaryTree.add(8);
-        binaryTree.add(10);
+        const binaryTree = new BinaryTree<number>();
+        numb2.split('').forEach(item => {
+            binaryTree.add(Number(item));
+        });
+        binaryTree.RLR((node)=>console.log(node));
+        binaryTree.LRR((node)=>console.log(node));
+        binaryTree.RRL((node)=>console.log(node));
+
+        console.log( binaryTree.search(1) );
+        binaryTree.removeNode(1);
         console.log(binaryTree);
+
+        const avlTree = new AVLTree();
+        avlTree.setRoot(10);
+        avlTree.addNode(9);
+        avlTree.addNode(11);
+        avlTree.addNode(8);
+        avlTree.addNode(12);
+        avlTree.addNode(13);
+        console.log(avlTree);
+        avlTree.LRR((node) => console.log(node));
 
     }, []);
 
