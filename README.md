@@ -1,15 +1,20 @@
 ## 云家
 
 ## .husky
+
 ```sh
   yarn add --dev husky
   yarn husky init
 ```
+
 ### lintstage
+
 ```
   yarn add lint-staged -D
 ```
+
 ### commitlint
+
 ```sh
   echo "yarn commitlint --edit \$1" > .husky/commit-msg
 

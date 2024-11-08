@@ -1,11 +1,11 @@
 {
-  singleQuote: true, // 使用单引号
-  trailingComma: 'es5', // 在多行对象或数组的最后一个元素后面加逗号（ES5有效）
-  printWidth: 80, // 每行代码的最大长度
-  tabWidth: 2, // 每个缩进级别的空格数
-  useTabs: false, // 使用空格而不是制表符进行缩进
-  semi: true, // 在语句末尾添加分号
-  bracketSpacing: true, // 在对象字面量之间打印空格
-  jsxSingleQuote: true, // 在jsx中使用单引号
-  arrowParens: 'avoid', // 只有当箭头函数有一个参数时省略括号
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "bracketSpacing": true,
+  "jsxSingleQuote": true,
+  "arrowParens": "avoid"
 }
