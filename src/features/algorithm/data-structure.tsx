@@ -74,7 +74,6 @@ export class LinkedList<T> {
     previous.next = current.next;
     return this.head;
   }
-
 }
 
 class DoubleLinkNode<T> {
@@ -87,7 +86,6 @@ class DoubleLinkNode<T> {
 }
 
 export class DoubleLinkedList<T> {
-
   head: DoubleLinkNode<T> | null = null;
   tail: DoubleLinkNode<T> | null = null;
 
@@ -123,7 +121,6 @@ export class DoubleLinkedList<T> {
       }
     }
   }
-
 }
 
 export class TreeNode<T> {
@@ -138,7 +135,7 @@ export class TreeNode<T> {
   }
 
   deleteChildNode(value: T) {
-    this.children = this.children.filter((node) => node.value !== value);
+    this.children = this.children.filter(node => node.value !== value);
   }
 
   travelDFS(callback: (node: TreeNode<T>) => void) {
@@ -161,7 +158,6 @@ export class TreeNode<T> {
       }
     }
   }
-
 }
 
 export class Tree<T> {
@@ -186,7 +182,6 @@ export class Tree<T> {
   travelBFS(callback: (node: TreeNode<T>) => void) {
     this.root?.BFS(callback, this.root);
   }
-
 }
 
 class Queue<T> {
@@ -256,7 +251,10 @@ export class BinaryTree<T> {
     }
   }
 
-  private $Search(value: T, node: BinaryTreeNode<T> | null): BinaryTreeNode<T> | null {
+  private $Search(
+    value: T,
+    node: BinaryTreeNode<T> | null
+  ): BinaryTreeNode<T> | null {
     if (node === null) {
       return null;
     }
@@ -274,7 +272,10 @@ export class BinaryTree<T> {
     return this.$removeNode(value, this.root);
   }
 
-  private $removeNode(value: T, node: BinaryTreeNode<T> | null): BinaryTreeNode<T> | null {
+  private $removeNode(
+    value: T,
+    node: BinaryTreeNode<T> | null
+  ): BinaryTreeNode<T> | null {
     if (node === null) {
       return null;
     }
@@ -305,7 +306,6 @@ export class BinaryTree<T> {
 
       return node;
     }
-
   }
 
   findMinNode(node: BinaryTreeNode<T>) {
@@ -323,7 +323,10 @@ export class BinaryTree<T> {
     }
   }
 
-  private $RLR(tree: BinaryTreeNode<T>, callback: (node: BinaryTreeNode<T>) => void): void {
+  private $RLR(
+    tree: BinaryTreeNode<T>,
+    callback: (node: BinaryTreeNode<T>) => void
+  ): void {
     callback(tree);
     if (tree.left) {
       this.$RLR(tree.left, callback);
@@ -339,7 +342,10 @@ export class BinaryTree<T> {
     }
   }
 
-  private $LRR(tree: BinaryTreeNode<T>, callback: (node: BinaryTreeNode<T>) => void): void {
+  private $LRR(
+    tree: BinaryTreeNode<T>,
+    callback: (node: BinaryTreeNode<T>) => void
+  ): void {
     if (tree.left) {
       this.$LRR(tree.left, callback);
     }
@@ -355,7 +361,10 @@ export class BinaryTree<T> {
     }
   }
 
-  private $RRL(tree: BinaryTreeNode<T>, callback: (node: BinaryTreeNode<T>) => void): void {
+  private $RRL(
+    tree: BinaryTreeNode<T>,
+    callback: (node: BinaryTreeNode<T>) => void
+  ): void {
     if (tree.right) {
       this.$RRL(tree.right, callback);
     }
@@ -364,7 +373,6 @@ export class BinaryTree<T> {
       this.$RRL(tree.left, callback);
     }
   }
-
 }
 
 class AVLTreeNode<T> {
@@ -378,18 +386,25 @@ class AVLTreeNode<T> {
   }
 
   updateHeight() {
-    this.height = 1 + Math.max((this.left ? this.left.height : 0), (this.right ? this.right.height : 0));
+    this.height =
+      1 +
+      Math.max(
+        this.left ? this.left.height : 0,
+        this.right ? this.right.height : 0
+      );
   }
 
   getBalanceFactor() {
-    return (this.left ? this.left.height : 0) - (this.right ? this.right.height : 0);
+    return (
+      (this.left ? this.left.height : 0) - (this.right ? this.right.height : 0)
+    );
   }
 }
 
 export class AVLTree<T> {
   root: AVLTreeNode<T> | null = null;
 
-  constructor() { }
+  constructor() {}
 
   setRoot(value: T) {
     if (this.root === null) {
@@ -423,16 +438,16 @@ export class AVLTree<T> {
     const balanceFactor = node.getBalanceFactor();
     if (balanceFactor > 1) {
       if (node.left && node.left.getBalanceFactor() < 0) {
-        this.rotateLeft(node.left);
+        node.left = this.rotateLeft(node.left);
       }
 
-      this.rotateRight(node);
+      return this.rotateRight(node);
     } else if (balanceFactor < -1) {
-      if (node.right && node.right.getBalanceFactor() < 0) {
-        this.rotateRight(node.right);
+      if (node.right && node.right.getBalanceFactor() > 0) {
+        node.right = this.rotateRight(node.right);
       }
 
-      this.rotateLeft(node);
+      return this.rotateLeft(node);
     }
 
     return node;
@@ -445,18 +460,20 @@ export class AVLTree<T> {
       rightChild.left = node;
     }
     rightChild?.updateHeight();
+    node.updateHeight();
 
     return rightChild;
   }
 
   private rotateRight(node: AVLTreeNode<T>) {
     const leftChild = node.left;
-    node.left = leftChild?.left || null;
+    node.left = leftChild?.right || null;
     if (leftChild) {
-      leftChild.left = node;
+      leftChild.right = node;
     }
 
     leftChild?.updateHeight();
+    node.updateHeight();
 
     return leftChild;
   }
@@ -476,5 +493,4 @@ export class AVLTree<T> {
       this.$LRR(node.right, callback);
     }
   }
-
 }

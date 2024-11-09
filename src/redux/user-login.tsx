@@ -1,20 +1,26 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const userLogin = createSlice({
-    name: 'userLogin',
-    initialState: {
-        userLogin: false,
-        currentUser: {},
-        sessionTimeout: false,
+  name: 'userLogin',
+  initialState: {
+    userLogin: false,
+    currentUser: {},
+    sessionTimeout: false,
+  },
+  reducers: {
+    login: state => {
+      state.userLogin = true;
     },
-    reducers: {
-        login: (state) => { 
-            state.userLogin = true 
-        },
-        logout: (state) => { state.userLogin = false },
-        currentUser: (state, action) => { state.currentUser = action.payload },
-        sessionTimeout: (state, action) => { state.sessionTimeout = action.payload },
-    }
+    logout: state => {
+      state.userLogin = false;
+    },
+    currentUser: (state, action) => {
+      state.currentUser = action.payload;
+    },
+    sessionTimeout: (state, action) => {
+      state.sessionTimeout = action.payload;
+    },
+  },
 });
 
 export const { login, logout, currentUser, sessionTimeout } = userLogin.actions;
