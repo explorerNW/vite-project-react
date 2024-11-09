@@ -1,0 +1,38 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:prettier/recommended" // 使用prettier推荐的规则
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "prettier"
+    ],
+    "rules": {
+        // 你可以在这里添加自定义的规则
+        // 例如，强制使用单引号：
+        "quotes": [
+            "error",
+            "single"
+        ],
+        // 禁止在未使用的变量前使用下划线：
+        "no-underscore-dangle": [
+            "error",
+            {
+                "allowAfterThis": true
+            }
+        ]
+        // 其他自定义规则...
+    }
+}

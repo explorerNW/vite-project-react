@@ -1,4 +1,6 @@
 
 yarn lint
 
+yarn format
+
 yarn pre-commit

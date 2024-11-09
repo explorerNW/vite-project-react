@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const userLogin = createSlice({
     name: 'userLogin',
@@ -8,13 +8,19 @@ export const userLogin = createSlice({
         sessionTimeout: false,
     },
     reducers: {
-        login: (state) => { 
-            state.userLogin = true 
+        login: state => {
+            state.userLogin = true;
         },
-        logout: (state) => { state.userLogin = false },
-        currentUser: (state, action) => { state.currentUser = action.payload },
-        sessionTimeout: (state, action) => { state.sessionTimeout = action.payload },
-    }
+        logout: state => {
+            state.userLogin = false;
+        },
+        currentUser: (state, action) => {
+            state.currentUser = action.payload;
+        },
+        sessionTimeout: (state, action) => {
+            state.sessionTimeout = action.payload;
+        },
+    },
 });
 
 export const { login, logout, currentUser, sessionTimeout } = userLogin.actions;

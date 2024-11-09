@@ -1,13 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const activeRouteSlice = createSlice({
     name: 'activeRoute',
     initialState: {
-        value: ''
+        value: '',
     },
     reducers: {
-        setActivePath: (state, action) => { state.value = action.payload }
-    }
+        setActivePath: (state, action) => {
+            state.value = action.payload;
+        },
+    },
 });
 
 export const { setActivePath } = activeRouteSlice.actions;

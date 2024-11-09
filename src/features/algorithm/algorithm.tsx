@@ -16,9 +16,17 @@ export function findItemOfSum(array: number[], target: number) {
 export function addTowNumbers(numb1: string, numb2: string) {
     const maxlength = Math.max(numb1.length, numb2.length);
     if (numb1.length < numb2.length) {
-        numb1 = Array(numb2.length - numb1.length).fill(0).toString().replace(/,/g, '') + numb1;
+        numb1 =
+            Array(numb2.length - numb1.length)
+                .fill(0)
+                .toString()
+                .replace(/,/g, '') + numb1;
     } else {
-        numb2 = Array(numb1.length - numb2.length).fill(0).toString().replace(/,/g, '') + numb2;
+        numb2 =
+            Array(numb1.length - numb2.length)
+                .fill(0)
+                .toString()
+                .replace(/,/g, '') + numb2;
     }
     let upAdd = 0;
     const result = [];
@@ -40,22 +48,21 @@ export function addTowNumbers(numb1: string, numb2: string) {
     return result.toString().replace(/,/g, '');
 }
 
-export function lengthOfLongestSubstring( s: string ): number {
-
+export function lengthOfLongestSubstring(s: string): number {
     const pre: number[] = [];
-    let [sofar, end] = [0,0];
-  
-    for( let i = 0; i < s.length; i++ ){
-      const ascii = s[i].charCodeAt( 0 );
-      const last = pre[ascii] ?? -1;
-      end = last + end >= i ? ( i - last ) : ( end + 1 );
-  
-      sofar = Math.max( sofar, end );
-      pre[ascii] = i;
+    let [sofar, end] = [0, 0];
+
+    for (let i = 0; i < s.length; i++) {
+        const ascii = s[i].charCodeAt(0);
+        const last = pre[ascii] ?? -1;
+        end = last + end >= i ? i - last : end + 1;
+
+        sofar = Math.max(sofar, end);
+        pre[ascii] = i;
     }
-  
+
     return sofar;
-  }
+}
 
 export function maxLenghtOfOne(list: number[]) {
     let temp = [];
@@ -97,6 +104,6 @@ export function removeDuplicate(numbers: number[]) {
             }
         }
     }
-    
+
     return numbers;
 }
