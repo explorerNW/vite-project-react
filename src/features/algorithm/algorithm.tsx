@@ -107,3 +107,23 @@ export function removeDuplicate(numbers: number[]) {
 
   return numbers;
 }
+
+export function binarySearch<T>(array: T[], value: T) {
+  let left = 0;
+  let right = array.length;
+  while (left <= right) {
+    const middle = Math.floor((left + right) / 2);
+    if (value < array[middle]) {
+      right = middle - 1;
+    } else if (value > array[middle]) {
+      left = middle + 1;
+    } else {
+      if (array[middle] === undefined) {
+        return false;
+      }
+      return true;
+    }
+  }
+
+  return false;
+}

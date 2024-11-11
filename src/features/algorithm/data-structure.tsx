@@ -228,17 +228,17 @@ export class BinaryTree<T> {
   }
 
   insertNode(node: BinaryTreeNode<T>, value: T) {
-    if (node.left === null && value < node.value) {
-      node.left = new BinaryTreeNode(value);
-    } else if (node.right === null && value > node.value) {
-      node.right = new BinaryTreeNode(value);
-    } else {
-      if (node.left && value < node.value) {
+    if (value < node.value) {
+      if (node.left) {
         this.insertNode(node.left, value);
       } else {
-        if (node.right) {
-          this.insertNode(node.right, value);
-        }
+        node.left = new BinaryTreeNode(value);
+      }
+    } else {
+      if (node.right) {
+        this.insertNode(node.right, value);
+      } else {
+        node.right = new BinaryTreeNode(value);
       }
     }
   }

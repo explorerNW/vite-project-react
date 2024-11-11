@@ -21,6 +21,7 @@ import {
   maxLenghtOfOne,
   moveZero,
   removeDuplicate,
+  binarySearch,
 } from '../algorithm/algorithm';
 import {
   AVLTree,
@@ -276,6 +277,8 @@ export default function Temp() {
 
     console.log(avlTree);
     avlTree.LRR(node => console.log(node));
+
+    console.log(binarySearch([0, 1, 2, 3, 4, 5, 6], 40));
   }, []);
 
   useInsertionEffect(() => {
