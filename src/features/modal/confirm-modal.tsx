@@ -7,12 +7,16 @@ export default function ConfirmModal({
   handleOk,
   handleCancel,
   children,
+  maskClosable,
+  confirmLoading,
 }: {
   title: string;
   isModalOpen: boolean;
   handleOk: () => void;
   handleCancel: () => void;
   children?: ReactNode;
+  maskClosable?: boolean;
+  confirmLoading?: boolean;
 }) {
   return (
     <>
@@ -21,6 +25,8 @@ export default function ConfirmModal({
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        maskClosable={maskClosable}
+        confirmLoading={confirmLoading}
       >
         {children && children}
       </Modal>
