@@ -6,7 +6,7 @@ import {
   lightsDown,
   lightsUp,
 } from './device-control.api';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { json } from 'react-router-dom';
 import { interval, useOnlineStatus } from '../utils';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -24,7 +24,6 @@ export default function DeviceControl() {
   const [chipInfo, setChipInfo] = useState<IChipInfo>({} as IChipInfo);
   const [lightStatus, setLightStatus] = useState(false);
   const online = useOnlineStatus();
-  const ref = useRef({ changed: false, dataLoaded: false, count: 0 });
   const [notificationApi, contextHolder] = notification.useNotification();
   const [count, setCount] = useState(0);
   const { loading: loagingChipInfo, refresh } = useRequest(getChipInfo, {
@@ -43,10 +42,7 @@ export default function DeviceControl() {
   });
 
   useEffect(() => {
-    if (!ref.current.dataLoaded) {
-      loadingLightsStatusAction();
-      ref.current.dataLoaded = true;
-    }
+    loadingLightsStatusAction();
   }, []);
 
   const { loading: loadingLightsStatus, run: loadingLightsStatusAction } =
@@ -150,14 +146,16 @@ export default function DeviceControl() {
           {lightStatus ? '关' : '开'} 灯
         </Button>
       </div>
-      count: {count}{' '}
-      <button
-        onClick={() => {
-          interval(1000, () => setCount(count => count + 1));
-        }}
-      >
-        start
-      </button>
+      <div className='flex items-center gap-4'>
+        count: {count}
+        <button
+          onClick={() => {
+            interval(1000, () => setCount(count => count + 1));
+          }}
+        >
+          start
+        </button>
+      </div>
     </>
   );
 }

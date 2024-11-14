@@ -86,3 +86,13 @@ export const interval = (delay = 1000, callback: () => void) => {
   }
   requestAnimationFrame(interval);
 };
+
+export const isEmail = (email: string) => {
+  return /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email);
+};
+
+export const isPhone = (phone: string) => {
+  return /^1\d{10}$|^(0\d{2,3}-?|\(0\d{2,3}\))?[1-9]\d{4,7}(-\d{1,8})?$/.test(
+    phone
+  );
+};

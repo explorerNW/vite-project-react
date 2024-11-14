@@ -1,6 +1,6 @@
 import axios from 'axios';
 import environment from '../../environments/local.environment';
-import { User } from '../data';
+import { User } from '../data.type';
 
 export const instance = axios.create({
   baseURL: `http://${environment.apiHost}`,

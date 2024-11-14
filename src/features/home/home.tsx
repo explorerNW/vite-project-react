@@ -11,7 +11,7 @@ import './home.scss';
 import { useDispatch } from 'react-redux';
 import { currentUser, login, logout } from '../../redux/user-login';
 import { getCurrentUser } from '../login/login.api';
-import { User } from '../data';
+import { User } from '../data.type';
 import { cleanStorage } from '../login/login';
 import { useState } from 'react';
 import ConfirmModal from '../modal/confirm-modal';
@@ -27,7 +27,7 @@ export const loader = async () => {
 };
 
 const navList = ['/home'];
-const homeNavList = ['upload-file', 'device-control'];
+const homeNavList = ['upload-file', 'device-control', 'user-list'];
 
 export default function Home() {
   const navigate = useNavigate();
@@ -36,7 +36,19 @@ export default function Home() {
   const submit = useSubmit();
   const location = useLocation();
   const [activeRout, setActiveRoute] = useState(location?.state?.activePath);
-  const [showLogout, setShowLogout] = useState(false);
+  const [modal, setModal] = useState({
+    title: '',
+    open: false,
+    content: <></>,
+    handleOk: () => {},
+    handleCancel: () => {},
+  });
+
+  const handleCancel = () => {
+    setModal(modal => {
+      return { ...modal, open: false };
+    });
+  };
 
   if (loaderData?.user) {
     dispatch(login());
@@ -44,7 +56,6 @@ export default function Home() {
   }
 
   const logoutHandler = () => {
-    setShowLogout(true);
     cleanStorage();
     dispatch(logout());
     submit(
@@ -59,6 +70,14 @@ export default function Home() {
 
   return (
     <>
+      <ConfirmModal
+        title={modal.title}
+        isModalOpen={modal.open}
+        handleOk={modal.handleOk}
+        handleCancel={modal.handleCancel}
+      >
+        {modal.content}
+      </ConfirmModal>
       <div className='flex flex-col flex-l-1 w-full h-full bg-white home'>
         <div className='h-[2rem] leading-8 header bg-[var(--background-color-theme)]'>
           <div className='flex items-center justify-between pr-4 text-white'>
@@ -67,12 +86,7 @@ export default function Home() {
                 return (
                   <li
                     className='cursor-pointer hover:text-[#eab308]'
-                    onClick={() => {
-                      setActiveRoute(path);
-                      navigate(path, {
-                        state: { activePath: path },
-                      });
-                    }}
+                    onClick={() => {}}
                     key={index}
                   >
                     {path.toString().replace('/', '').trim()}
@@ -82,36 +96,62 @@ export default function Home() {
             </ul>
             <span
               className='cursor-pointer hover:text-[#eab308]'
-              onClick={() => setShowLogout(true)}
+              onClick={() => {
+                setModal(modal => {
+                  return {
+                    ...modal,
+                    title: '登出',
+                    open: true,
+                    handleOk: () => {
+                      logoutHandler();
+                      handleCancel();
+                    },
+                    handleCancel: () => {
+                      handleCancel();
+                    },
+                    content: <span>退出登录?</span>,
+                  };
+                });
+              }}
             >
               logout
             </span>
-            <ConfirmModal
-              title='登出'
-              isModalOpen={showLogout}
-              handleOk={logoutHandler}
-              handleCancel={() => setShowLogout(false)}
-            >
-              退出登录?
-            </ConfirmModal>
           </div>
         </div>
-        <div className='flex-l-1 relative p-4'>
+        <div className='flex-l-1 relative p-4 flex flex-col gap-4'>
           <div>
             <ul className='flex gap-4 text-black'>
               {homeNavList.map((path, index) => {
                 return (
                   <li
                     className={
-                      path === activeRout
-                        ? 'cursor-pointer active'
-                        : 'cursor-pointer'
+                      'cursor-pointer' + (path === activeRout ? ' active' : '')
                     }
                     onClick={() => {
+                      if (path === activeRout) {
+                        return;
+                      }
                       setActiveRoute(path);
+                      handleCancel();
                       navigate(path, {
                         state: { activePath: path },
                       });
+                      // setModal(modal => {
+                      //   return {
+                      //     ...modal,
+                      //     title: 'Are you sure?',
+                      //     content: <></>,
+                      //     open: true,
+                      //     handleOk: () => {
+                      //       setActiveRoute(path);
+                      //       handleCancel();
+                      //       navigate(path, {
+                      //         state: { activePath: path },
+                      //       });
+                      //     },
+                      //     handleCancel: handleCancel,
+                      //   };
+                      // });
                     }}
                     key={index}
                   >
