@@ -27,6 +27,7 @@ export default function ConfirmModal({
         onCancel={handleCancel}
         maskClosable={maskClosable}
         confirmLoading={confirmLoading}
+        destroyOnClose
       >
         {children && children}
       </Modal>

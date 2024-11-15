@@ -5,11 +5,20 @@ import react from '@vitejs/plugin-react-swc';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ['antd'],
+    include: [],
   },
   build: {
     commonjsOptions: {
-      include: [/antd/, /node_modules/],
+      include: [/node_modules/],
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          lodash: ['lodash'],
+          antd: ['antd'],
+          three: ['three'],
+        },
+      },
     },
   },
 });
