@@ -11,17 +11,12 @@ export type User = {
   [key: string]: string | number | boolean;
 };
 
-export type TCreateUser = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+export type TCreateUser = Pick<
+  User,
+  'firstName' | 'lastName' | 'sex' | 'email' | 'age' | 'salary' | 'password'
+>;
 
-export type TUpdateUser = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-  salary: string;
-};
+export type TUpdateUser = Pick<
+  User,
+  'id' | 'firstName' | 'lastName' | 'age' | 'salary'
+>;

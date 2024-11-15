@@ -3,58 +3,101 @@ import { forwardRef, memo, useImperativeHandle, useState } from 'react';
 
 import './user-update-form.scss';
 import { isEmail } from '../utils';
-import { updateUser } from './user-apis';
-import { TUpdateUser, User } from '../data.type';
+import { createUser, updateUser } from './user-apis';
+import { TCreateUser, TUpdateUser } from '../data.type';
 import notification from 'antd/es/notification';
 import { useRequest } from 'ahooks';
 
 const UserUpdate = memo(
   forwardRef(function UserUpdate(
-    { user, isCreate }: { user: User; isCreate: boolean },
+    { user, isCreate }: { user?: TCreateUser | TUpdateUser; isCreate: boolean },
     ref
   ) {
-    const [firstName, setFirstName] = useState<string>(user.firstName);
-    const [lastName, setLastName] = useState<string>(user.lastName);
-    const [age, setAge] = useState<number | ''>(user.age);
-    const [sex, setSex] = useState<'male' | 'female'>(user.sex);
-    const [email, setEmail] = useState(user.email);
+    const [firstName, setFirstName] = useState<string>(user?.firstName || '');
+    const [lastName, setLastName] = useState<string>(user?.lastName || '');
+    const [age, setAge] = useState<number | ''>(user?.age || '');
+    const [sex, setSex] = useState<'male' | 'female'>(
+      (user as TCreateUser)?.sex || 'male'
+    );
+    const [email, setEmail] = useState((user as TCreateUser)?.email || '');
     const [emailError, setEmailError] = useState('');
-    const [salary, setSalary] = useState(user.salary);
+    const [salary, setSalary] = useState(user?.salary || '¥1000000');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [notificationApi, contextHolder] = notification.useNotification();
-    const { runAsync: updateUserApi, loading } = useRequest(updateUser, {
-      manual: true,
-      debounceWait: 200,
-    });
+    const { runAsync: updateUserApi, loading: loadingUpdate } = useRequest(
+      updateUser,
+      {
+        manual: true,
+        debounceWait: 200,
+      }
+    );
+    const { runAsync: createUserApi, loading: loadingCreate } = useRequest(
+      createUser,
+      {
+        manual: true,
+        debounceWait: 200,
+      }
+    );
     useImperativeHandle(ref, () => {
       return {
         updateUserHandler: () => {
-          return updateUserHandler();
+          if (isCreate) {
+            return createUserHandler();
+          } else {
+            return updateUserHandler();
+          }
         },
-        loading,
+        loading: isCreate ? loadingCreate : loadingUpdate,
       };
     });
 
     const updateUserHandler = async () => {
-      const payload: TUpdateUser = {
-        id: user.id,
+      if (!isCreate) {
+        const payload: TUpdateUser = {
+          id: (user as TUpdateUser)?.id,
+          firstName,
+          lastName,
+          age: Number(age),
+          salary,
+        };
+        const res = await updateUserApi(payload).catch(e => {
+          notificationApi.info({
+            message: '服务器-api异常',
+            description: e,
+          });
+          return { data: { success: false, message: { user_exist: Boolean } } };
+        });
+        return res.data.success;
+      }
+    };
+
+    const createUserHandler = async () => {
+      const payload: TCreateUser = {
         firstName,
         lastName,
+        sex,
         age: Number(age),
+        email,
         salary,
+        password,
       };
-      const res = await updateUserApi(payload).catch(e => {
+      const res = await createUserApi(payload).catch(e => {
         notificationApi.info({
           message: '服务器-api异常',
           description: e,
         });
-        return { data: { success: false, message: { user_exist: Boolean } } };
+        return { data: { success: false, message: e } };
       });
-      return new Promise(resolve => {
-        resolve(res.data.success);
-      });
+
+      if (res.data.message?.user_exist) {
+        setEmailError('此邮箱已经注册!');
+      } else {
+        setEmailError('');
+      }
+
+      return res.data.success;
     };
 
     const sexOptions = [
@@ -65,7 +108,7 @@ const UserUpdate = memo(
     return (
       <>
         <div>
-          <div className='flex flex-col gap-4 border max-w-[20rem] m-auto p-2 mt-[3rem] mt-[1rem]'>
+          <div className='flex flex-col gap-4 border m-auto p-2 rounded-sm'>
             <div className='flex gap-4'>
               <span className='w-[5rem]'>first name: </span>
               <input
@@ -105,7 +148,7 @@ const UserUpdate = memo(
               <input
                 className='border disabled'
                 value={email}
-                disabled
+                disabled={!isCreate}
                 onChange={e => {
                   setEmail(e.target.value);
                 }}
