@@ -1,26 +1,17 @@
 import Table, { TableProps } from 'antd/es/table';
 import { User } from '../data.type';
 import { memo, useMemo, useRef, useState } from 'react';
-import { fetchUsersList } from './user-apis';
+import { fetchUsersList, searchUser } from './user-apis';
 import Space from 'antd/es/space';
-import { Button } from 'antd';
+import { Button, notification, Pagination } from 'antd';
 import ConfirmModal from '../modal/confirm-modal';
 import UserUpdate from './user-update-form';
-import { useRequest } from 'ahooks';
+import { useMount, useRequest } from 'ahooks';
+import Search from 'antd/es/input/Search';
 
 export const loader = () => {
   return {};
 };
-
-export default function Users() {
-  const { data, refresh, loading } = useRequest(fetchUsersList);
-
-  return (
-    <>
-      <UserList list={data?.data || []} refresh={refresh} loading={loading} />
-    </>
-  );
-}
 
 interface ITableUser {
   full_name: string;
@@ -31,15 +22,22 @@ interface ITableUser {
   user: User;
 }
 
-export const UserList = memo(function UserList({
-  list,
-  refresh,
-  loading,
-}: {
-  list: User[];
-  refresh: () => void;
-  loading: boolean;
-}) {
+const UserList = memo(function UserList() {
+  const {
+    data,
+    run: refresh,
+    loading,
+  } = useRequest(fetchUsersList, { manual: true });
+  useMount(() => {
+    refreshHandler();
+  });
+  const list = useMemo(() => {
+    if (data?.data) {
+      return { users: data?.data.users, totalLength: data?.data.totalLength };
+    } else {
+      return { users: [], totalLength: 0 };
+    }
+  }, [data]);
   const [modal, setModal] = useState({
     title: '',
     open: false,
@@ -49,9 +47,27 @@ export const UserList = memo(function UserList({
     confirmLoading: false,
   });
   const updateUserRef = useRef<{
-    updateUserHandler: () => Promise<boolean>;
+    updateUserHandler: (start: number, end: number) => Promise<boolean>;
+    deleteUserHandler: (start: number, end: number) => Promise<boolean>;
     loading: boolean;
   }>();
+  const ref = useRef<{ pageIndex: number; pageSize: number }>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [notificationApi, contextHolder] = notification.useNotification();
+  const refreshHandler = () => {
+    refresh(
+      ref.current.pageIndex * ref.current.pageSize,
+      (ref.current.pageIndex + 1) * ref.current.pageSize - 1
+    );
+  };
+
+  const { runAsync: searchUserApi } = useRequest(searchUser, {
+    manual: true,
+    debounceWait: 200,
+  });
+
   const columns: TableProps<ITableUser>['columns'] = [
     {
       title: 'Full Name',
@@ -76,13 +92,13 @@ export const UserList = memo(function UserList({
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      width: 200,
+      width: 180,
     },
     {
       title: 'Income',
       dataIndex: 'income',
       key: 'income',
-      width: 200,
+      width: 180,
     },
     {
       title: 'Action',
@@ -96,6 +112,9 @@ export const UserList = memo(function UserList({
             <Button
               onClick={e => {
                 e.preventDefault();
+                const start = ref.current.pageIndex * ref.current.pageSize;
+                const end =
+                  (ref.current.pageIndex + 1) * ref.current.pageSize - 1;
                 setModal(modal => {
                   return {
                     ...modal,
@@ -106,15 +125,26 @@ export const UserList = memo(function UserList({
                         return { ...modal, confirmLoading: true };
                       });
                       updateUserRef.current
-                        ?.updateUserHandler()
+                        ?.updateUserHandler(start, end)
                         .then(update => {
                           if (update) {
-                            refresh();
+                            refreshHandler();
                             updateUserRef.current!.loading = false;
                             setModal(modal => {
                               return {
                                 ...modal,
                                 open: false,
+                                confirmLoading: false,
+                              };
+                            });
+                          } else {
+                            notificationApi.info({
+                              message: '更新用户失败!',
+                              description: '',
+                            });
+                            setModal(modal => {
+                              return {
+                                ...modal,
                                 confirmLoading: false,
                               };
                             });
@@ -144,7 +174,67 @@ export const UserList = memo(function UserList({
             >
               Edit
             </Button>
-            <Button onClick={() => {}}>Delete</Button>
+            <Button
+              onClick={() => {
+                const start = ref.current.pageIndex * ref.current.pageSize;
+                const end =
+                  (ref.current.pageIndex + 1) * ref.current.pageSize - 1;
+                setModal(modal => {
+                  return {
+                    ...modal,
+                    title: 'Delete User',
+                    open: true,
+                    content: (
+                      <>
+                        <UserUpdate
+                          isCreate={false}
+                          user={record.user}
+                          isDelete={true}
+                          ref={updateUserRef}
+                        />
+                      </>
+                    ),
+                    handleOk: async () => {
+                      setModal(modal => {
+                        return {
+                          ...modal,
+                          confirmLoading: true,
+                        };
+                      });
+                      updateUserRef.current
+                        ?.deleteUserHandler(start, end)
+                        .then(res => {
+                          if (res) {
+                            refreshHandler();
+                            setModal(modal => {
+                              return {
+                                ...modal,
+                                open: false,
+                                confirmLoading: false,
+                              };
+                            });
+                          } else {
+                            notificationApi.info({
+                              message: '服务器-api异常',
+                              description: '',
+                            });
+                          }
+                        });
+                    },
+                    handleCancel: () => {
+                      setModal(modal => {
+                        return {
+                          ...modal,
+                          open: false,
+                        };
+                      });
+                    },
+                  };
+                });
+              }}
+            >
+              Delete
+            </Button>
           </Space>
         );
       },
@@ -152,7 +242,7 @@ export const UserList = memo(function UserList({
   ];
 
   const formatList = useMemo(() => {
-    return list.map((user, index) => {
+    return list.users.map((user, index) => {
       return {
         key: index,
         full_name: `${user.firstName} ${user.lastName}`,
@@ -168,26 +258,55 @@ export const UserList = memo(function UserList({
   return (
     <>
       <div className='flex flex-col gap-4'>
-        <div className='text-right'>
+        <div className='flex justify-between'>
+          <div>
+            <Search
+              placeholder='input search text'
+              allowClear
+              onSearch={e => {
+                searchUserApi(e).then(() => {});
+              }}
+              style={{ width: 200 }}
+            />
+          </div>
           <Button
             onClick={() => {
+              const start = ref.current.pageIndex * ref.current.pageSize;
+              const end =
+                (ref.current.pageIndex + 1) * ref.current.pageSize - 1;
               setModal(modal => {
                 return {
                   ...modal,
                   open: true,
                   title: 'Create User',
                   handleOk: () => {
-                    updateUserRef.current?.updateUserHandler().then(res => {
-                      if (res) {
-                        refresh();
-                        setModal(modal => {
-                          return {
-                            ...modal,
-                            open: false,
-                          };
-                        });
-                      }
+                    setModal(modal => {
+                      return {
+                        ...modal,
+                        confirmLoading: true,
+                      };
                     });
+                    updateUserRef.current
+                      ?.updateUserHandler(start, end)
+                      .then(res => {
+                        if (res) {
+                          refreshHandler();
+                          setModal(modal => {
+                            return {
+                              ...modal,
+                              open: false,
+                              confirmLoading: false,
+                            };
+                          });
+                        } else {
+                          setModal(modal => {
+                            return {
+                              ...modal,
+                              confirmLoading: false,
+                            };
+                          });
+                        }
+                      });
                   },
                   handleCancel: () => {
                     setModal(modal => {
@@ -209,15 +328,31 @@ export const UserList = memo(function UserList({
             Create User
           </Button>
         </div>
-        <Table<ITableUser>
-          bordered={true}
-          virtual
-          scroll={{ x: 1000, y: 400 }}
-          columns={columns}
-          dataSource={formatList}
-          loading={loading}
-        />
+        <div className='flex flex-col gap-4'>
+          <Table<ITableUser>
+            bordered={true}
+            virtual
+            scroll={{ x: 1000, y: 0 }}
+            columns={columns}
+            dataSource={formatList}
+            loading={loading}
+            pagination={false}
+          />
+          <Pagination
+            showSizeChanger
+            onChange={(pageIndex, pageSize) => {
+              ref.current.pageIndex = pageIndex - 1;
+              ref.current.pageSize = pageSize;
+              refreshHandler();
+            }}
+            defaultCurrent={1}
+            total={list.totalLength}
+            align={'end'}
+            hideOnSinglePage={true}
+          />
+        </div>
       </div>
+      {contextHolder}
       <ConfirmModal
         title={modal.title}
         isModalOpen={modal.open}
@@ -230,3 +365,5 @@ export const UserList = memo(function UserList({
     </>
   );
 });
+
+export default UserList;

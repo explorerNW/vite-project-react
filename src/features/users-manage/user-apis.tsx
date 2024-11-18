@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { TCreateUser, TUpdateUser, User } from '../data.type';
+import { TCreateUser, TDeleteUser, TUpdateUser, User } from '../data.type';
 import { instance } from '../login/login.api';
 
 export const createUser = async (
@@ -35,9 +35,35 @@ export const updateUser = async (
     });
 };
 
-export const fetchUsersList = async (): Promise<AxiosResponse<User[]>> => {
+export const deleteUser = async (
+  user: TDeleteUser
+): Promise<AxiosResponse<boolean>> => {
   return await instance
-    .get('/user/all', { headers: { roles: ['admin'] } })
+    .delete(`/user/${user.id}`, { headers: { roles: ['admin'] } })
+    .then(res => res.data.success)
+    .catch(e => {
+      throw new Error(e);
+    });
+};
+
+export const fetchUsersList = async (
+  start: number = 0,
+  end: number = 10
+): Promise<AxiosResponse<{ users: User[]; totalLength: number }>> => {
+  return await instance
+    .get(`/user/all?start=${start}&end=${end}`, {
+      headers: { roles: ['admin'] },
+    })
+    .catch(e => {
+      throw new Error(e);
+    });
+};
+
+export const searchUser = async (
+  value: string
+): Promise<AxiosResponse<{ users: User[]; totalLength: number }>> => {
+  return await instance
+    .get(`/user/findByLike?value=${value}`, { headers: { roles: ['admin'] } })
     .catch(e => {
       throw new Error(e);
     });

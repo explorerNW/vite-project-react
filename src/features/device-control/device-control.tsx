@@ -98,30 +98,32 @@ export default function DeviceControl() {
       <div>
         <span>{online ? 'Online' : 'Offline'}</span>
       </div>
-      <Button
-        onClick={async () => {
-          if (loagingChipInfo) {
-            return;
-          }
-          refresh();
-        }}
-      >
-        fetch Chip Information
-      </Button>
-      {loagingChipInfo ? (
-        <LoadingOutlined />
-      ) : (
-        <div className='flex flex-col'>
-          {chipInfo &&
-            Object.keys(chipInfo).map((key, index) => {
-              return (
-                <span key={index}>
-                  {key}: {chipInfo[key]}
-                </span>
-              );
-            })}
-        </div>
-      )}
+      <div>
+        <Button
+          onClick={async () => {
+            if (loagingChipInfo) {
+              return;
+            }
+            refresh();
+          }}
+        >
+          fetch Chip Information
+        </Button>
+        {loagingChipInfo ? (
+          <LoadingOutlined />
+        ) : (
+          <div className='flex flex-col'>
+            {chipInfo &&
+              Object.keys(chipInfo).map((key, index) => {
+                return (
+                  <span key={index}>
+                    {key}: {chipInfo[key]}
+                  </span>
+                );
+              })}
+          </div>
+        )}
+      </div>
       <div className='flex flex-col gap-2'>
         <div>
           {
