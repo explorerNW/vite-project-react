@@ -3,14 +3,22 @@ import { forwardRef, memo, useImperativeHandle, useState } from 'react';
 
 import './user-update-form.scss';
 import { isEmail } from '../utils';
-import { createUser, updateUser } from './user-apis';
+import { createUser, deleteUser, updateUser } from './user-apis';
 import { TCreateUser, TUpdateUser } from '../data.type';
 import notification from 'antd/es/notification';
 import { useRequest } from 'ahooks';
 
 const UserUpdate = memo(
   forwardRef(function UserUpdate(
-    { user, isCreate }: { user?: TCreateUser | TUpdateUser; isCreate: boolean },
+    {
+      user,
+      isCreate,
+      isDelete,
+    }: {
+      user?: TCreateUser | TUpdateUser;
+      isCreate: boolean;
+      isDelete?: boolean;
+    },
     ref
   ) {
     const [firstName, setFirstName] = useState<string>(user?.firstName || '');
@@ -25,7 +33,7 @@ const UserUpdate = memo(
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    const [notificationApi, contextHolder] = notification.useNotification();
+
     const { runAsync: updateUserApi, loading: loadingUpdate } = useRequest(
       updateUser,
       {
@@ -40,6 +48,32 @@ const UserUpdate = memo(
         debounceWait: 200,
       }
     );
+
+    const { runAsync: deleteUserApi, loading: loadingDeleteUser } = useRequest(
+      deleteUser,
+      { manual: true }
+    );
+    const deleteUserHandler = async () => {
+      const res = await deleteUserApi({ id: (user as TUpdateUser)?.id }).catch(
+        e => {
+          notificationApi.info({
+            message: '服务器-api异常',
+            description: e,
+          });
+          return false;
+        }
+      );
+      return res;
+    };
+    useImperativeHandle(ref, () => {
+      return {
+        deleteUserHandler: () => {
+          return deleteUserHandler();
+        },
+      };
+    });
+
+    const [notificationApi, contextHolder] = notification.useNotification();
     useImperativeHandle(ref, () => {
       return {
         updateUserHandler: () => {
@@ -49,9 +83,13 @@ const UserUpdate = memo(
             return updateUserHandler();
           }
         },
-        loading: isCreate ? loadingCreate : loadingUpdate,
+        loading: loadingCreate || loadingUpdate || loadingDeleteUser,
       };
     });
+
+    if (isDelete) {
+      return <span>确定删除此用户?</span>;
+    }
 
     const updateUserHandler = async () => {
       if (!isCreate) {
@@ -108,7 +146,7 @@ const UserUpdate = memo(
     return (
       <>
         <div>
-          <div className='flex flex-col gap-4 border m-auto p-2 rounded-sm'>
+          <div className='flex flex-col gap-4 m-auto p-2 rounded-sm'>
             <div className='flex gap-4'>
               <span className='w-[5rem]'>first name: </span>
               <input

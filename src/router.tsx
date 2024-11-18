@@ -21,7 +21,7 @@ const UploadFile = lazy(() => import('./features/upload-file/upload-file'));
 const DeviceControl = lazy(
   () => import('./features/device-control/device-control')
 );
-const Users = lazy(() => import('./features/users-manage/user-list'));
+const UserList = lazy(() => import('./features/users-manage/user-list'));
 const SessionTimeout = lazy(
   () => import('./features/error-page/session-timeout')
 );
@@ -94,7 +94,7 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Skeleton />}>
             <AuthGuard>
-              <Users />
+              <UserList />
             </AuthGuard>
           </Suspense>
         ),

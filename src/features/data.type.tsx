@@ -20,3 +20,5 @@ export type TUpdateUser = Pick<
   User,
   'id' | 'firstName' | 'lastName' | 'age' | 'salary'
 >;
+
+export type TDeleteUser = Pick<User, 'id'>;
