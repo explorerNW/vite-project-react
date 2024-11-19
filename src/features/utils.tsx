@@ -96,3 +96,18 @@ export const isPhone = (phone: string) => {
     phone
   );
 };
+
+export class SSE {
+  sse: EventSource;
+  constructor(url: string) {
+    this.sse = new EventSource(url);
+  }
+
+  onMessage(callback: (this: EventSource, ev: Event) => void) {
+    this.sse.onmessage = callback;
+  }
+
+  onError(callback: (this: EventSource, ev: Event) => void) {
+    this.sse.onerror = callback;
+  }
+}

@@ -1,6 +1,12 @@
 import { AxiosResponse } from 'axios';
 import { TCreateUser, TDeleteUser, TUpdateUser, User } from '../data.type';
 import { instance } from '../login/login.api';
+import environment from '../../environments/local.environment';
+import { io } from 'socket.io-client';
+
+export const socketIO = () => io('s0.v100.vip:16220');
+
+export const SSE_URL = `http://${environment.apiHost}/sse`;
 
 export const createUser = async (
   user: TCreateUser
