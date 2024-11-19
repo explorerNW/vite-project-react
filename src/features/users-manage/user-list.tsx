@@ -71,10 +71,8 @@ const UserList = memo(function UserList() {
 
   useEffect(() => {
     if (!ref.current.mounted) {
-      console.log(ref);
       const sse = new SSE(`${SSE_URL}/message`);
-      sse.onMessage(e => {
-        console.log(e);
+      sse.onMessage(() => {
         sse.sse.close();
       });
       socketIO.connect();
