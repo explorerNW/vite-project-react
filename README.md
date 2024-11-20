@@ -25,3 +25,9 @@
 
   echo "export default { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
 ```
+
+### Docker - nginx:alpine
+
+```sh
+  docker run --name my-nginx-server -d -p 80:80 nginx:alpine
+```
