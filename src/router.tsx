@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
 import App from './App';
-import ErrorPage from './features/error-page/error-page';
+// import ErrorPage from './features/error-page/error-page';
 import { loader as homeLoader } from './features/home/home';
 import {
   loader as loginLoader,
@@ -47,14 +47,14 @@ const router = createBrowserRouter([
     path: '',
     element: <App />,
     loader: loginLoader,
-    errorElement: <ErrorPage />,
+    // errorElement: <ErrorPage />,
   },
   {
     path: 'login',
     element: <App />,
     loader: loginLoader,
     action: loginAction,
-    errorElement: <ErrorPage />,
+    // errorElement: <ErrorPage />,
   },
   {
     path: 'home',
@@ -73,7 +73,7 @@ const router = createBrowserRouter([
             <UploadFile />
           </Suspense>
         ),
-        errorElement: <ErrorPage />,
+        // errorElement: <ErrorPage />,
       },
       {
         path: 'device-control',
@@ -86,7 +86,7 @@ const router = createBrowserRouter([
             </AuthGuard>
           </Suspense>
         ),
-        errorElement: <ErrorPage />,
+        // // errorElement: <ErrorPage />,
       },
       {
         path: 'user-list',
@@ -98,7 +98,7 @@ const router = createBrowserRouter([
             </AuthGuard>
           </Suspense>
         ),
-        errorElement: <ErrorPage />,
+        // errorElement: <ErrorPage />,
       },
       {
         path: 'threejs',
@@ -107,7 +107,7 @@ const router = createBrowserRouter([
             <Threejs />
           </Suspense>
         ),
-        errorElement: <ErrorPage />,
+        // errorElement: <ErrorPage />,
       },
       {
         path: 'temp',
@@ -116,7 +116,7 @@ const router = createBrowserRouter([
             <Temp />
           </Suspense>
         ),
-        errorElement: <ErrorPage />,
+        // errorElement: <ErrorPage />,
       },
     ],
   },

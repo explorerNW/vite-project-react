@@ -1,15 +1,13 @@
 import Table, { TableProps } from 'antd/es/table';
 import { User } from '../data.type';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { fetchUsersList, searchUser, SSE_URL } from './user-apis';
+import { memo, useMemo, useRef, useState } from 'react';
+import { fetchUsersList, searchUser } from './user-apis';
 import Space from 'antd/es/space';
 import { Button, notification, Pagination } from 'antd';
 import ConfirmModal from '../modal/confirm-modal';
 import UserUpdate from './user-update-form';
 import { useMount, useRequest } from 'ahooks';
 import Search from 'antd/es/input/Search';
-import { SSE } from '../utils';
-import socketIO from './socket.io';
 
 export const loader = () => {
   return {};
@@ -68,32 +66,6 @@ const UserList = memo(function UserList() {
       (ref.current.pageIndex + 1) * ref.current.pageSize - 1
     );
   };
-
-  useEffect(() => {
-    if (!ref.current.mounted) {
-      const sse = new SSE(`${SSE_URL}/message`);
-      sse.onMessage(() => {
-        sse.sse.close();
-      });
-      socketIO.connect();
-      socketIO.on('connect', () => {
-        console.log('socker connect');
-      });
-      socketIO.on('to-client', function (data) {
-        notificationApi.info({
-          message: data.data,
-          description: 'socket-message',
-        });
-      });
-      socketIO.on('exception', function (data) {
-        console.log('event', data);
-      });
-      socketIO.on('disconnect', function () {
-        console.log('Disconnected');
-      });
-      ref.current.mounted = true;
-    }
-  }, []);
 
   const { runAsync: searchUserApi } = useRequest(searchUser, {
     manual: true,
@@ -300,20 +272,6 @@ const UserList = memo(function UserList() {
               }}
               style={{ width: 200 }}
             />
-            <Button
-              onClick={() => {
-                socketIO.emit('events');
-              }}
-            >
-              receive server message
-            </Button>
-            <Button
-              onClick={() => {
-                socketIO.emit('stop-interval');
-              }}
-            >
-              stop server interval
-            </Button>
           </div>
           <Button
             onClick={() => {
