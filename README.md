@@ -30,4 +30,5 @@
 
 ```sh
   docker run --name my-nginx-server -d -p 80:80 nginx:alpine
+  
 ```
