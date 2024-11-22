@@ -8,13 +8,36 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
-  server:
+  react:
     build:
       context: .
+    container_name: vite-project-react
     environment:
       NODE_ENV: production
     ports:
-      - 3000:3000
+      - 3000:80
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - nginx
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 80
+    volumes:
+      - ./app/dist:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+  # caddy:
+  #   image: caddy:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8082:81
+  #     - 443:443
+  #     - 443:443/udp
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
@@ -48,3 +71,17 @@ services:
 #   db-password:
 #     file: db/password.txt
 
+#!/bin/bash
+
+# DOCKER_IMAGE=vite-project-react
+# DOCKERFILE_PATH=/Users/mac/code-repo/react-repo/vite-project-react/Dockerfile
+# PROJECT_PATH=/Users/mac/code-repo/react-repo/vite-project-react
+
+# docker ps -a | grep $DOCKER_IMAGE && docker stop $DOCKER_IMAGE
+# docker rm $DOCKER_IMAGE
+# docker images -q $DOCKER_IMAGE && docker rmi $DOCKER_IMAGE
+
+# cd $PROJECT_PATH
+# docker build -t $DOCKER_IMAGE .
+
+# docker run -it -d -p 3000:80 --name vite-project-react $DOCKER_IMAGE

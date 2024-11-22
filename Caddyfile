@@ -1,0 +1,14 @@
+localhost:3000 { #绑定的地址 域名或者 hostname:prot   形式
+
+    handle /api/* {  #需要代理得/api/得请求到后台  8000
+        reverse_proxy backend:9000
+    }
+
+    handle {
+        root /root/www   #打包后的静态文件
+        try_files {path} /index.html
+        file_server
+        encode    zstd   gzip  #开启zip
+    }
+
+}
