@@ -26,9 +26,16 @@
   echo "export default { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
 ```
 
-### Docker - nginx:alpine
+### Docker
+
+#### nginx:alpine
 
 ```sh
-  docker run --name my-nginx-server -d -p 80:80 nginx:alpine
+  docker run --name my-nginx-server -d -p 3000:80 nginx:alpine
+```
 
+#### nginx:caddy
+
+```sh
+  docker run --name my-caddy-server -d -p 80:80 caddy:latest
 ```
