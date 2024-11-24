@@ -221,7 +221,7 @@ export default function DeviceControl() {
               }
             }}
           >
-            sent
+            send
           </Button>
         </div>
       </div>
