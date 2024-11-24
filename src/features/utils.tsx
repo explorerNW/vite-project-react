@@ -1,9 +1,13 @@
 import {
   memo,
   ReactNode,
+  useEffect,
   useInsertionEffect,
+  useRef,
+  useState,
   useSyncExternalStore,
 } from 'react';
+import { ITableUser } from './users-manage/user-list';
 
 export function useOnlineStatus() {
   function subscribe(callback: () => void) {
@@ -111,3 +115,106 @@ export class SSE {
     this.sse.onerror = callback;
   }
 }
+
+export const CanvasTable = memo(function CanvasTable({
+  data,
+}: {
+  data: ITableUser[];
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      const rowHeight = 20;
+      const columnWidth = [150, 50, 50];
+      canvas.height = data.length * rowHeight;
+      canvas.width = columnWidth.reduce((a, b) => a + b, 0);
+      data.forEach((row, index) => {
+        const y = index * rowHeight;
+        ctx!.fillText(row.full_name, 0, y + rowHeight / 2);
+        ctx!.fillText(row.sex, columnWidth[0], y + rowHeight / 2);
+        ctx!.fillText(
+          row.age.toString(),
+          columnWidth[0] + columnWidth[1],
+          y + rowHeight / 2
+        );
+        ctx!.strokeRect(0, y, canvas.width, canvas.height);
+      });
+    }
+  }, [data]);
+
+  return (
+    <>
+      <canvas ref={canvasRef} />
+    </>
+  );
+});
+
+const tileSize = 100;
+const rowHeight = 20;
+export const CanvasTileTable = memo(function CanvasTileTable({
+  data,
+  containerHeight,
+  scrollTop,
+}: {
+  data: ITableUser[];
+  containerHeight: number;
+  scrollTop: number;
+}) {
+  const canvasRef = useRef(null);
+  const [visibleTiles, setVisibleTiles] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current as HTMLCanvasElement;
+      const columnWidth = [150, 50, 50];
+
+      canvas.height = containerHeight;
+      canvas.width = columnWidth.reduce((a, b) => a + b, 0);
+      data.forEach(() => {
+        const start = Math.ceil(scrollTop / (tileSize * rowHeight));
+        const end = start + Math.floor(canvas.height / (tileSize * rowHeight));
+        const tiles: number[] = [];
+        for (let i = start; i <= end; i++) {
+          tiles.push(i);
+        }
+
+        setVisibleTiles(() => tiles);
+      });
+    }
+  }, [scrollTop]);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+
+      const columnWidth = [150, 50, 50];
+
+      visibleTiles.forEach(tileIndex => {
+        const startRow = tileIndex * tileSize;
+        const endRow = Math.min(data.length, startRow + tileSize);
+        for (let rowIndex = startRow; rowIndex < endRow; rowIndex++) {
+          const row = data[rowIndex];
+          const y = (rowIndex - startRow) * rowHeight;
+          ctx!.fillText(row.full_name, 0, y + rowHeight / 2);
+          ctx!.fillText(row.sex, columnWidth[0], y + rowHeight / 2);
+          ctx!.fillText(
+            row.age.toString(),
+            columnWidth[0] + columnWidth[1],
+            y + rowHeight / 2
+          );
+          ctx!.strokeRect(0, y, canvas.width, canvas.height);
+        }
+      });
+    }
+  }, [visibleTiles, data]);
+
+  return (
+    <>
+      <canvas ref={canvasRef} />
+    </>
+  );
+});

@@ -64,7 +64,7 @@ export const fetchUsersList = async (
 
 export const searchUser = async (
   value: string
-): Promise<AxiosResponse<{ users: User[]; totalLength: number }>> => {
+): Promise<AxiosResponse<User[]>> => {
   return await instance
     .get(`/user/findByLike?value=${value}`, { headers: { roles: ['admin'] } })
     .catch(e => {
