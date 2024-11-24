@@ -8,12 +8,14 @@ import ConfirmModal from '../modal/confirm-modal';
 import UserUpdate from './user-update-form';
 import { useMount, useRequest } from 'ahooks';
 import Search from 'antd/es/input/Search';
+import { CanvasTileTable } from '../utils';
 
 export const loader = () => {
   return {};
 };
 
-interface ITableUser {
+export interface ITableUser {
+  key?: number;
   full_name: string;
   age: number;
   income: string;
@@ -67,10 +69,33 @@ const UserList = memo(function UserList() {
     );
   };
 
-  const { runAsync: searchUserApi } = useRequest(searchUser, {
-    manual: true,
-    debounceWait: 200,
-  });
+  const { data: searchResult, runAsync: searchUserApi } = useRequest(
+    searchUser,
+    {
+      manual: true,
+      debounceWait: 200,
+    }
+  );
+
+  const canvasList = useMemo(() => {
+    if (searchResult?.data) {
+      return searchResult?.data.slice(0, 3000).map((user, index) => {
+        return {
+          key: index,
+          full_name: `${user.firstName} ${user.lastName}`,
+          age: user.age,
+          email: user.email,
+          income: user.salary,
+          sex: user.sex,
+          user,
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [searchResult]);
+
+  const [scrollTop, setScrollTop] = useState(0);
 
   const columns: TableProps<ITableUser>['columns'] = [
     {
@@ -353,6 +378,18 @@ const UserList = memo(function UserList() {
             total={list.totalLength}
             align={'end'}
             hideOnSinglePage={true}
+          />
+        </div>
+        <div
+          className='max-h-[20rem] overflow-auto border'
+          onScroll={e => {
+            setScrollTop(() => (e.target as HTMLDListElement).scrollTop);
+          }}
+        >
+          <CanvasTileTable
+            data={canvasList}
+            containerHeight={20 * 16}
+            scrollTop={scrollTop}
           />
         </div>
       </div>
