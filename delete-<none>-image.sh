@@ -12,3 +12,11 @@ else
   docker rmi $(docker ps -a -q -f "status=exited")
   echo "Dangling images removed successfully."
 fi
+
+yes y | docker container prune
+
+yes y | docker volume prune
+
+yes y | docker image prune
+
+yes y | docker network prune

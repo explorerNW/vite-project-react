@@ -32,7 +32,7 @@
             {
                 "allowAfterThis": true
             }
-        ]
-        // 其他自定义规则...
+        ],
+        "no-unused-vars": "error"
     }
 }

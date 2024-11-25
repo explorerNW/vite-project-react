@@ -17,7 +17,7 @@
 
 input {
   background-color: white;
-  color: black;
+  color: black !important;
 
   &:focus,
   &:focus-visible {
