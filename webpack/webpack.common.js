@@ -1,9 +1,15 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+import path from 'path';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
+import CompressionPlugin from 'compression-webpack-plugin';
 
-module.exports = {
+import autoprefixer from 'autoprefixer';
+import tailwindcss from 'tailwindcss';
+
+const __dirname = new URL('.', import.meta.url).pathname;
+
+export default {
   entry: './src/main.tsx',
   output: {
     path: path.join(__dirname, '../dist'),
@@ -37,7 +43,7 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                plugins: [require('autoprefixer'), require('tailwindcss')],
+                plugins: [autoprefixer, tailwindcss],
               },
             },
           },
@@ -53,9 +59,17 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                plugins: [require('autoprefixer'), require('tailwindcss')],
+                plugins: [autoprefixer, tailwindcss],
               },
             },
+          },
+        ],
+      },
+      {
+        test: /\.txt$/,
+        use: [
+          {
+            loader: path.resolve(__dirname, 'webpack.custom.loader.js'),
           },
         ],
       },
@@ -73,6 +87,9 @@ module.exports = {
     new webpack.ProvidePlugin({
       React: 'react',
       ReactDOM: 'react-dom',
+    }),
+    new CompressionPlugin({
+      algorithm: 'gzip',
     }),
   ],
 };

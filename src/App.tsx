@@ -1,5 +1,6 @@
 import './App.scss';
 import Login from './features/login/login';
+import './styles/index.css';
 
 function App() {
   return (

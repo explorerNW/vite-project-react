@@ -1,18 +1,20 @@
-const { default: merge } = require('webpack-merge');
-const common = require('./webpack.common');
-const TercerPlugin = require('terser-webpack-plugin');
-const MinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
-const BundleAnalyzerPlugin =
-  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+import { merge } from 'webpack-merge';
+import common from './webpack.common.js';
+import TercerPlugin from 'terser-webpack-plugin';
+import MinimizerWebpackPlugin from 'css-minimizer-webpack-plugin';
+import BundleAnalyzerPlugin from 'webpack-bundle-analyzer';
 
-module.exports = merge(common, {
+export default merge(common, {
   mode: 'production',
   optimization: {
     minimize: true,
-    minimizer: [new TercerPlugin(), new MinimizerWebpackPlugin()],
+    minimizer: [
+      new TercerPlugin({ terserOptions: { compress: { drop_console: true } } }),
+      new MinimizerWebpackPlugin(),
+    ],
     splitChunks: {
       chunks: 'all',
     },
   },
-  plugins: [new BundleAnalyzerPlugin()],
+  plugins: [],
 });
