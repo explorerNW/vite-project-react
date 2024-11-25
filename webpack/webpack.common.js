@@ -75,7 +75,6 @@ export default {
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        use: ['file-loader', 'url-loader'],
         type: 'asset/resource',
       },
     ],
