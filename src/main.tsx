@@ -9,7 +9,7 @@ import { ConfigProvider } from 'antd';
 import './instrument';
 import './styles/tailwind.css';
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ConfigProvider theme={{ token: { colorPrimary: '#5f85c1' } }}>
       <Provider store={store}>
