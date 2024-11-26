@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import viteCompression from 'vite-plugin-compression';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,6 +15,13 @@ export default defineConfig({
     include: [],
   },
   build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     commonjsOptions: {
       include: [/node_modules/],
     },
@@ -25,6 +33,11 @@ export default defineConfig({
           three: ['three'],
         },
       },
+      plugins: [
+        visualizer({
+          open: false,
+        }),
+      ],
     },
   },
 });
