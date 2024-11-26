@@ -10,8 +10,9 @@ import tailwindcss from 'tailwindcss';
 const __dirname = new URL('.', import.meta.url).pathname;
 
 export default {
-  entry: './src/main.tsx',
+  entry: ['./src/main.tsx'],
   output: {
+    clean: true,
     path: path.join(__dirname, '../dist'),
     filename: '[name].[contenthash:8].js',
   },

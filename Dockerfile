@@ -17,7 +17,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 
 # 构建项目
-RUN npm run build:webpack
+RUN npm run build
 
 # 使用Nginx作为生产环境的基础镜像
 FROM nginx:alpine
