@@ -4,9 +4,7 @@ export default class CustomPlugin {
   }
 
   apply(compiler) {
-    compiler.hooks.emit('CustomPlugin', compilation => {
-      console.log('compilation--->', compilation);
-    });
+    compiler.hooks.emit.tap('CustomPlugin', compilation => {});
     compiler.hooks.done.tap('CustomPlugin', stats => {
       console.log('编译完成!');
     });

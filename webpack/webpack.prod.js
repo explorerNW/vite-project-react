@@ -3,6 +3,7 @@ import common from './webpack.common.js';
 import TercerPlugin from 'terser-webpack-plugin';
 import MinimizerWebpackPlugin from 'css-minimizer-webpack-plugin';
 import BundleAnalyzerPlugin from 'webpack-bundle-analyzer';
+import CustomPlugin from './webpack.custom.plugin.js';
 
 export default merge(common, {
   mode: 'production',
@@ -16,5 +17,5 @@ export default merge(common, {
       chunks: 'all',
     },
   },
-  plugins: [],
+  plugins: [new CustomPlugin()],
 });
