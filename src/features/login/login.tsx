@@ -18,6 +18,8 @@ import { isEmail, isPhone } from '../utils';
 import { loginPageLoader } from '../../loader';
 import { loginPageAction } from '../../action';
 
+import iconCloudHomeSvg from '../../assets/icon-cloud-home.svg';
+
 export const action = loginPageAction;
 
 export const loader = loginPageLoader;
@@ -72,7 +74,7 @@ export default function Login() {
       <Form>
         <div className='login bg-white flex flex-col w-3/5 rounded-[3px] gap-2 p-2 shadow-inner max-w-xs'>
           <div className='flex flex-row items-center gap-1'>
-            <img src='/icon-cloud-home.svg' width='48px' height='48px'></img>
+            <img src={iconCloudHomeSvg} width='48px' height='48px'></img>
             <span className='text-[#5e85c0] text-3xl'>欢迎登陆</span>
           </div>
           <div className='flex flex-col gap-4'>
