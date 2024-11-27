@@ -79,20 +79,9 @@ export default {
         type: 'asset/source',
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         exclude: /node_modules/,
         type: 'asset/resource',
-      },
-      {
-        test: /\.svg/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'svg-url-loader',
-          options: {
-            // make all svg images to work in IE
-            iesafe: true,
-          },
-        },
       },
     ],
   },
