@@ -37,6 +37,7 @@ export default {
       },
       {
         test: /\.s[ac]ss$/i,
+        exclude: /node_modules/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
@@ -53,6 +54,7 @@ export default {
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
@@ -68,15 +70,29 @@ export default {
       },
       {
         test: /\.txt$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: path.resolve(__dirname, 'webpack.custom.loader.js'),
           },
         ],
+        type: 'asset/source',
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
+        test: /\.(png|jpe?g|gif)$/i,
+        exclude: /node_modules/,
         type: 'asset/resource',
+      },
+      {
+        test: /\.svg/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'svg-url-loader',
+          options: {
+            // make all svg images to work in IE
+            iesafe: true,
+          },
+        },
       },
     ],
   },

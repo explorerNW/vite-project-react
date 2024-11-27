@@ -1,5 +1,4 @@
 import {
-  json,
   Navigate,
   Outlet,
   useLoaderData,
@@ -10,24 +9,16 @@ import {
 import './home.scss';
 import { useDispatch } from 'react-redux';
 import { currentUser, login, logout } from '../../redux/user-login';
-import { getCurrentUser } from '../login/login.api';
 import { User } from '../data.type';
 import { cleanStorage } from '../login/login';
 import { useState } from 'react';
 import ConfirmModal from '../modal/confirm-modal';
+import { homePageLoader } from '../../loader';
 
-export const loader = async () => {
-  const userId = localStorage.getItem('user_id');
-  if (userId) {
-    const user = await getCurrentUser(userId);
-    return json({ user });
-  }
-
-  return json({ userLogout: true });
-};
+export const loader = homePageLoader;
 
 const navList = ['/home'];
-const homeNavList = ['upload-file', 'device-control', 'user-list'];
+const homeNavList = ['upload-file', 'device-control', 'user-list', 'temp'];
 
 export default function Home() {
   const navigate = useNavigate();

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import viteCompression from 'vite-plugin-compression';
 import { visualizer } from 'rollup-plugin-visualizer';
+import CustomPlugin from './vite/vite.custom.plugin';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -37,6 +38,7 @@ export default defineConfig({
         visualizer({
           open: false,
         }),
+        CustomPlugin(),
       ],
     },
   },

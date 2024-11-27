@@ -4,9 +4,7 @@ import ImageBg from '../../assets/1bg@2x.7146d57f.jpg';
 import ImagePuzzle from '../../assets/1puzzle@2x.png';
 import { SetStateAction, useState } from 'react';
 import {
-  ActionFunctionArgs,
   Form,
-  json,
   Navigate,
   useActionData,
   useLoaderData,
@@ -15,40 +13,14 @@ import {
 import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/user-login';
-import { getCurrentUser, login as loginApi, logout } from './login.api';
 import { User } from '../data.type';
 import { isEmail, isPhone } from '../utils';
+import { loginPageLoader } from '../../loader';
+import { loginPageAction } from '../../action';
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData) as {
-    phone: string;
-    password: string;
-    logout: string;
-    email: string;
-  };
-  if (data.logout && data.email) {
-    await logout(data.email);
-    return json({ userLogin: false });
-  }
-  const res = await loginApi(data.email, data.password);
-  if (res.success && res.login_success) {
-    localStorage.setItem('user_id', res.user_id);
-    return json({ success: true, userId: res.user_id });
-  } else {
-    return json({ error: { password: '密码错误!' } });
-  }
-};
+export const action = loginPageAction;
 
-export const loader = async () => {
-  const userId = localStorage.getItem('user_id');
-  if (userId) {
-    const user = await getCurrentUser(userId);
-    return json({ user });
-  }
-
-  return json({ userLogout: true });
-};
+export const loader = loginPageLoader;
 
 const verifyCaptcha = async (data: { x: number }) => {
   if (data?.x && data.x > 87 && data.x < 93) {
