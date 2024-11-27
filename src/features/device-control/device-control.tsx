@@ -7,20 +7,17 @@ import {
   lightsUp,
 } from './device-control.api';
 import { useEffect, useRef, useState } from 'react';
-import { json } from 'react-router-dom';
 import { SSE, useOnlineStatus } from '../utils';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRequest, useUpdateEffect } from 'ahooks';
 import { SSE_URL } from '../users-manage/user-apis';
 import socketIO, { sendToRMQ } from '../socket.io';
+import { devicePageLoader } from '../../loader';
+import { devicePageAction } from '../../action';
 
-export const loader = async () => {
-  return json({});
-};
+export const loader = devicePageLoader;
 
-export const action = async () => {
-  return json({});
-};
+export const action = devicePageAction;
 
 export default function DeviceControl() {
   const [chipInfo, setChipInfo] = useState<IChipInfo>({} as IChipInfo);

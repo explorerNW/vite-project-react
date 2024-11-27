@@ -1,3 +1,8 @@
 export default {
-  plugins: [['import', { libraryName: 'antd', style: 'css' }]],
+  presets: [
+    '@babel/preset-env',
+    '@babel/preset-react',
+    '@babel/preset-typescript',
+  ],
+  plugins: [['import', { libraryName: 'antd', style: true }]],
 };

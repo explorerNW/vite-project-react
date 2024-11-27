@@ -36,9 +36,7 @@ import { Button } from 'antd';
 import { getChipInfo } from '../device-control/device-control.api';
 import { useLocalStorageState } from 'ahooks';
 
-export const loader = () => {
-  return {};
-};
+import text from './temp.txt';
 
 const Input = forwardRef(function Input(
   props: {
@@ -93,6 +91,8 @@ const Search = memo(
         focus() {},
       };
     });
+
+    useEffect(() => {}, []);
 
     const filterList = useMemo(() => {
       return list.filter(item =>
@@ -290,6 +290,7 @@ export default function Temp() {
 
   return (
     <>
+      <h1>Greeting: {text}</h1>
       <div className='flex flex-col'>
         <span>source: {source.join(' ,')}</span>
         <span>target: {target}</span>

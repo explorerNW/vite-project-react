@@ -1,20 +1,16 @@
 import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
 import App from './App';
 // import ErrorPage from './features/error-page/error-page';
-import { loader as homeLoader } from './features/home/home';
-import {
-  loader as loginLoader,
-  action as loginAction,
-} from './features/login/login';
-import {
-  loader as deviceControlLoader,
-  action as deviceControlAction,
-} from './features/device-control/device-control';
-import { loader as uploadFileLoader } from './features/upload-file/upload-file';
-import { loader as userListLoader } from './features/users-manage/user-list';
 import { lazy, ReactNode, Suspense } from 'react';
 import Skeleton from 'antd/es/skeleton';
 import { useSelector } from 'react-redux';
+import {
+  devicePageLoader,
+  homePageLoader,
+  loginPageLoader,
+  userListPageLoader,
+} from './loader';
+import { devicePageAction, loginPageAction } from './action';
 
 const Home = lazy(() => import('./features/home/home'));
 const UploadFile = lazy(() => import('./features/upload-file/upload-file'));
@@ -46,14 +42,14 @@ const router = createBrowserRouter([
   {
     path: '',
     element: <App />,
-    loader: loginLoader,
+    loader: loginPageLoader,
     // errorElement: <ErrorPage />,
   },
   {
     path: 'login',
     element: <App />,
-    loader: loginLoader,
-    action: loginAction,
+    loader: loginPageLoader,
+    action: loginPageAction,
     // errorElement: <ErrorPage />,
   },
   {
@@ -63,11 +59,10 @@ const router = createBrowserRouter([
         <Home />
       </Suspense>
     ),
-    loader: homeLoader,
+    loader: homePageLoader,
     children: [
       {
         path: 'upload-file',
-        loader: uploadFileLoader,
         element: (
           <Suspense fallback={<Skeleton />}>
             <UploadFile />
@@ -77,8 +72,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'device-control',
-        loader: deviceControlLoader,
-        action: deviceControlAction,
+        loader: devicePageLoader,
+        action: devicePageAction,
         element: (
           <Suspense fallback={<Skeleton />}>
             <AuthGuard>
@@ -90,7 +85,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'user-list',
-        loader: userListLoader,
+        loader: userListPageLoader,
         element: (
           <Suspense fallback={<Skeleton />}>
             <AuthGuard>
