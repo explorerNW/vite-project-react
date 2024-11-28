@@ -18,7 +18,7 @@ import { homePageLoader } from '../../loader';
 export const loader = homePageLoader;
 
 const navList = ['/home'];
-const homeNavList = ['upload-file', 'device-control', 'user-list', 'temp'];
+const homeNavList = ['upload-file', 'device-control', 'user-list'];
 
 export default function Home() {
   const navigate = useNavigate();

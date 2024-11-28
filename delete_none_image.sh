@@ -13,7 +13,7 @@ else
   echo "Dangling images removed successfully."
 fi
 
-# yes y | docker system prune -a
+yes y | docker system prune -a
 
 # 清理无用的容器（退出的容器）
 
