@@ -29,4 +29,4 @@ docker volume ls -qf dangling=true | xargs docker volume rm
 
 # 清理网络资源
 
-docker network ls | grep "bridge" | awk '/ / { print $1 }' | xargs docker network rm
+#docker network ls | grep "bridge" | awk '/ / { print $1 }' | xargs docker network rm
