@@ -10,7 +10,6 @@ import {
   useLoaderData,
   useSubmit,
 } from 'react-router-dom';
-import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/user-login';
 import { User } from '../data.type';
@@ -19,6 +18,7 @@ import { loginPageLoader } from '../../loader';
 import { loginPageAction } from '../../action';
 
 import iconCloudHomeSvg from '../../assets/icon-cloud-home.svg';
+import Button from 'antd/es/button';
 
 export const action = loginPageAction;
 
@@ -57,7 +57,7 @@ export default function Login() {
   const res = useActionData() as {
     success: boolean;
     currentUser: User;
-    error: { name: string; password: string };
+    error: { name: string; password: string; user_exist: string };
   };
   const [showError, setShowError] = useState(true);
   const [emailError, setEmailError] = useState('');
@@ -116,6 +116,9 @@ export default function Login() {
               ) : (
                 <></>
               )}
+              <span className='text-red-500 float-left w-full text-[.75rem] absolute bottom-[-1rem] pl-[.25rem]'>
+                {showError && !emailError && res?.error?.user_exist}
+              </span>
             </div>
             {/* 密码 */}
             <div className='flex flex-col relative'>
@@ -132,7 +135,7 @@ export default function Login() {
                   value={password}
                   onChange={event => {
                     setPassword(event.target.value);
-                    if (res?.error?.password) {
+                    if (res?.error?.password || res?.error?.user_exist) {
                       setShowError(false);
                     }
                   }}

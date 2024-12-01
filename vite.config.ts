@@ -22,10 +22,12 @@ export default defineConfig({
         drop_console: true,
         drop_debugger: true,
       },
+      maxWorkers: 10,
     },
     commonjsOptions: {
       include: [/node_modules/],
     },
+    manifest: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -33,6 +35,13 @@ export default defineConfig({
           antd: ['antd'],
           three: ['three'],
         },
+      },
+      cache: true,
+      perf: true,
+      maxParallelFileOps: 10,
+      treeshake: {
+        moduleSideEffects: 'no-external',
+        preset: 'recommended',
       },
       plugins: [
         visualizer({

@@ -3,13 +3,15 @@ import { User } from '../data.type';
 import { memo, useMemo, useRef, useState } from 'react';
 import { fetchUsersList, searchUser } from './user-apis';
 import Space from 'antd/es/space';
-import { Button, notification, Pagination } from 'antd';
 import ConfirmModal from '../modal/confirm-modal';
 import UserUpdate from './user-update-form';
 import { useMount, useRequest } from 'ahooks';
 import Search from 'antd/es/input/Search';
 import { CanvasTileTable } from '../utils';
 import { userListPageLoader } from '../../loader';
+import notification from 'antd/es/notification';
+import Button from 'antd/es/button';
+import Pagination from 'antd/es/pagination';
 
 export const loader = userListPageLoader;
 

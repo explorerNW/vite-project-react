@@ -22,6 +22,9 @@ export const loginPageAction = async ({ request }: ActionFunctionArgs) => {
     localStorage.setItem('user_id', res.user_id);
     return json({ success: true, userId: res.user_id });
   } else {
+    if (res.user_exist === false) {
+      return json({ error: { user_exist: '此用户不存在,请检查!' } });
+    }
     return json({ error: { password: '密码错误!' } });
   }
 };
