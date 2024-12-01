@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import Modal from 'antd/es/modal';
 import { ReactNode } from 'react';
 
 export default function ConfirmModal({

@@ -1,13 +1,13 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { RouterProvider } from 'react-router-dom';
 import router from './router';
 import { Provider } from 'react-redux';
 import store from './store';
-import { ConfigProvider } from 'antd';
 import './instrument';
 import './styles/tailwind.css';
+import ConfigProvider from 'antd/es/config-provider';
+import { StrictMode } from 'react';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -18,3 +18,20 @@ createRoot(document.getElementById('root')!).render(
     </ConfigProvider>
   </StrictMode>
 );
+
+// 注册Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then(registration => {
+        console.log(
+          'ServiceWorker registration successful with scope: ',
+          registration.scope
+        );
+      })
+      .catch(error => {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}

@@ -1,4 +1,3 @@
-import { Button, notification } from 'antd';
 import {
   getChipInfo,
   getLightsStatus,
@@ -7,17 +6,13 @@ import {
   lightsUp,
 } from './device-control.api';
 import { useEffect, useRef, useState } from 'react';
-import { SSE, useOnlineStatus } from '../utils';
+import { useOnlineStatus } from '../utils';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRequest, useUpdateEffect } from 'ahooks';
-import { SSE_URL } from '../users-manage/user-apis';
+// import { SSE_URL } from '../users-manage/user-apis';
 import socketIO, { sendToRMQ } from '../socket.io';
-import { devicePageLoader } from '../../loader';
-import { devicePageAction } from '../../action';
-
-export const loader = devicePageLoader;
-
-export const action = devicePageAction;
+import notification from 'antd/es/notification';
+import Button from 'antd/es/button';
 
 export default function DeviceControl() {
   const [chipInfo, setChipInfo] = useState<IChipInfo>({} as IChipInfo);
@@ -40,10 +35,6 @@ export default function DeviceControl() {
     },
   });
 
-  useEffect(() => {
-    loadingLightsStatusAction();
-  }, []);
-
   const [message, setMessage] = useState('');
   const { runAsync: sentToRMQ } = useRequest(sendToRMQ, {
     manual: true,
@@ -52,10 +43,10 @@ export default function DeviceControl() {
 
   useEffect(() => {
     if (!ref.current.mounted) {
-      const sse = new SSE(`${SSE_URL}/message`);
-      sse.onMessage(() => {
-        sse.sse.close();
-      });
+      // const sse = new SSE(`${SSE_URL}/message`);
+      // sse.onMessage(() => {
+      //   sse.sse.close();
+      // });
       socketIO.connect();
       socketIO.on('connect', () => {
         console.log('socker connect');
@@ -80,7 +71,7 @@ export default function DeviceControl() {
       });
       ref.current.mounted = true;
     }
-  }, []);
+  }, [notificationApi]);
 
   const { loading: loadingLightsStatus, run: loadingLightsStatusAction } =
     useRequest(getLightsStatus, {
@@ -95,6 +86,10 @@ export default function DeviceControl() {
         setLightStatus(res === 1);
       },
     });
+
+  useEffect(() => {
+    loadingLightsStatusAction();
+  }, [loadingLightsStatusAction]);
 
   const {
     loading: loadingLightsUp,

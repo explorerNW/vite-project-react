@@ -32,11 +32,11 @@ import {
   TreeNode,
 } from '../algorithm/data-structure';
 import { Tooltip, useCSS } from '../utils';
-import { Button } from 'antd';
 import { getChipInfo } from '../device-control/device-control.api';
 import { useLocalStorageState } from 'ahooks';
 
 import text from './temp.txt';
+import Button from 'antd/es/button';
 
 const Input = forwardRef(function Input(
   props: {

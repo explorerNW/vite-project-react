@@ -1,9 +1,9 @@
-import { Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { sessionTimeout } from '../../redux/user-login';
 
 import './sesson-timeout.scss';
+import Button from 'antd/es/button';
 
 export default function SessionTimeout() {
   const navigate = useNavigate();
