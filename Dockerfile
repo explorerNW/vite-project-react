@@ -31,6 +31,10 @@ COPY nginx.conf /etc/nginx/conf.d/
 # 复制构建好的文件到Nginx的html目录
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
+RUN mkdir -p /usr/share/nginx/secret
+COPY --from=build-stage /app/secret/www.me.explorernw.top.pem /usr/share/nginx/secret
+COPY --from=build-stage /app/secret/www.me.explorernw.top.key /usr/share/nginx/secret
+
 # 使用caddy作为生产环境的基础镜像
 # FROM caddy:latest
 # COPY --from=build-stage /app/dist /root/www
