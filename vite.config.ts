@@ -22,7 +22,7 @@ export default defineConfig({
         drop_console: true,
         drop_debugger: true,
       },
-      maxWorkers: 10,
+      maxWorkers: 4,
     },
     commonjsOptions: {
       include: [/node_modules/],
@@ -38,7 +38,7 @@ export default defineConfig({
       },
       cache: true,
       perf: true,
-      maxParallelFileOps: 10,
+      maxParallelFileOps: 4,
       treeshake: {
         moduleSideEffects: 'no-external',
         preset: 'recommended',

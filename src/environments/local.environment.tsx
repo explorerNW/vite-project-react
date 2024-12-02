@@ -1,5 +1,5 @@
 const environment = {
-  apiHost: 's0.v100.vip:16220',
+  apiHost: 'www.explorernw.top',
 };
 
 export default environment;
