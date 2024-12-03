@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import viteCompression from 'vite-plugin-compression';
@@ -10,6 +11,11 @@ export default defineConfig({
     react({}),
     viteCompression({
       algorithm: 'gzip',
+    }),
+    sentryVitePlugin({
+      org: 'wangnie',
+      project: 'react',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
     }),
   ],
   optimizeDeps: {
@@ -24,10 +30,13 @@ export default defineConfig({
       },
       maxWorkers: 4,
     },
+
     commonjsOptions: {
       include: [/node_modules/],
     },
+
     manifest: true,
+
     rollupOptions: {
       output: {
         manualChunks: {
@@ -35,6 +44,7 @@ export default defineConfig({
           antd: ['antd'],
           three: ['three'],
         },
+        sourcemap: true,
       },
       cache: true,
       perf: true,
@@ -50,5 +60,7 @@ export default defineConfig({
         CustomPlugin(),
       ],
     },
+
+    sourcemap: true,
   },
 });
