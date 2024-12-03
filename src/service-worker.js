@@ -2,7 +2,7 @@ self.addEventListener('install', event => {
   // 在安装过程中，可以选择缓存一些静态资源
   event.waitUntil(
     caches.open('my-cache-v1').then(cache => {
-      return cache.addAll(['/', '/home']);
+      return cache.addAll(['/']);
     })
   );
 });
