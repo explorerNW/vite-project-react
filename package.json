@@ -66,6 +66,8 @@
     "@playwright/test": "^1.49.0",
     "@prerenderer/renderer-puppeteer": "^1.2.4",
     "@prerenderer/webpack-plugin": "^5.3.10",
+    "@sentry/vite-plugin": "^2.22.6",
+    "@sentry/webpack-plugin": "^2.22.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.0.1",
     "@types/node": "^22.10.1",
