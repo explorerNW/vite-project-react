@@ -26,3 +26,7 @@ dist-ssr
 
 stats.html
 tsconfig.app.tsbuildinfo
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
