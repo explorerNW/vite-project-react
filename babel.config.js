@@ -4,7 +4,5 @@ export default {
     '@babel/preset-react',
     '@babel/preset-typescript',
   ],
-  plugins: [
-    ['import', { libraryName: 'antd', libraryDirectory: 'lib' }, 'antd'],
-  ],
+  plugins: [['import', { libraryName: 'antd', style: 'css' }]],
 };

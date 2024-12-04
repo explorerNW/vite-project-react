@@ -16,6 +16,7 @@ export default defineConfig({
       org: 'wangnie',
       project: 'react',
       authToken: process.env.SENTRY_AUTH_TOKEN,
+      telemetry: false,
     }),
   ],
   optimizeDeps: {
@@ -44,7 +45,6 @@ export default defineConfig({
           antd: ['antd'],
           three: ['three'],
         },
-        sourcemap: true,
       },
       cache: true,
       perf: true,

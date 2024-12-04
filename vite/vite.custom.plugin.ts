@@ -1,16 +1,17 @@
-import { Plugin } from 'vite';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { NormalizedOutputOptions, OutputBundle } from 'rollup';
 
-export default function CustomPlugin(): Plugin {
+let bundlerNames: string[] = [];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function CustomPlugin(): any {
   return {
     name: 'vite-custom-plugin',
     apply: 'build',
     buildStart() {
       console.log('\n编译开始---->');
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    transform(src: any, id: any) {
+    transform(src: string, id: string) {
       if (id.includes('temp/temp.txt')) {
         // 提取 Base64 编码的数据部分
         const base64Data = src.replace(/"/g, '').split(',')[1];
@@ -33,6 +34,11 @@ export default function CustomPlugin(): Plugin {
       console.log('\n编译结束---->');
     },
 
+    writeBundle(options: NormalizedOutputOptions, bundle: OutputBundle) {
+      options.sourcemap = false;
+      bundlerNames = Object.keys(bundle);
+    },
+
     async closeBundle() {
       console.log('\n打包结束---->');
       const sourceFilePath = path.join(__dirname, '../src/service-worker.js');
@@ -40,9 +46,16 @@ export default function CustomPlugin(): Plugin {
 
       try {
         const sourceContent = await fs.readFile(sourceFilePath, 'utf-8');
+        const str = bundlerNames
+          .filter(chunk => !chunk.includes('.map'))
+          .reduce((pre, cur) => {
+            pre += `'${cur}', `;
+            return pre;
+          }, '');
+
         await fs.writeFile(
           `${targetFilePath}/service-worker.js`,
-          sourceContent
+          sourceContent.replace(/'{bundlers}'/g, str)
         );
       } catch (e) {
         console.error('e-->', e);
