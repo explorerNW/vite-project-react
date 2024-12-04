@@ -49,6 +49,10 @@ export default function CustomPlugin(): any {
       console.log('\n打包结束---->');
       const sourceFilePath = path.join(__dirname, '../src/service-worker.js');
       const targetFilePath = path.join(__dirname, '../dist');
+      const manifestSourceFilePath = path.join(
+        __dirname,
+        '../src/manifest.json'
+      );
 
       try {
         const sourceContent = await fs.readFile(sourceFilePath, 'utf-8');
@@ -62,6 +66,15 @@ export default function CustomPlugin(): any {
         await fs.writeFile(
           `${targetFilePath}/${serviceWorkerFileName}.js`,
           sourceContent.replace(/'{bundlers}'/g, str)
+        );
+
+        const manifestSourceContent = await fs.readFile(
+          manifestSourceFilePath,
+          'utf-8'
+        );
+        await fs.writeFile(
+          `${targetFilePath}/manifest.json`,
+          manifestSourceContent
         );
       } catch (e) {
         console.error('e-->', e);
