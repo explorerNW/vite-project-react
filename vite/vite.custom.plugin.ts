@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import { NormalizedOutputOptions, OutputBundle } from 'rollup';
 
 let bundlerNames: string[] = [];
+let serviceWorkerFileName = '';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function CustomPlugin(): any {
   return {
@@ -25,6 +26,11 @@ export default function CustomPlugin(): any {
         const decoder = new TextDecoder('utf-8');
         const decodedString = decoder.decode(binaryData);
         return `export default "${decodedString.replace('{name}', '聂旺')}"`;
+      }
+
+      if (id.includes('src/main.ts')) {
+        serviceWorkerFileName = `service-worker-${new Date().toISOString()}`;
+        src = src.replace('{service-worker}', `/${serviceWorkerFileName}.js`);
       }
 
       return src;
@@ -54,7 +60,7 @@ export default function CustomPlugin(): any {
           }, '');
 
         await fs.writeFile(
-          `${targetFilePath}/service-worker.js`,
+          `${targetFilePath}/${serviceWorkerFileName}.js`,
           sourceContent.replace(/'{bundlers}'/g, str)
         );
       } catch (e) {
