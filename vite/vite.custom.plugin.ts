@@ -25,7 +25,7 @@ export default function CustomPlugin(): any {
         // 使用 TextDecoder 解码 Uint8Array 为字符串
         const decoder = new TextDecoder('utf-8');
         const decodedString = decoder.decode(binaryData);
-        return `export default "${decodedString.replace('{name}', '聂旺')}"`;
+        src = `export default "${decodedString.replace('{name}', '聂旺')}"`;
       }
 
       if (id.includes('src/main.ts')) {
@@ -33,7 +33,10 @@ export default function CustomPlugin(): any {
         src = src.replace('{service-worker}', `/${serviceWorkerFileName}.js`);
       }
 
-      return src;
+      return {
+        code: src,
+        map: null,
+      };
     },
 
     buildEnd() {
