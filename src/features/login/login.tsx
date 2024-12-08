@@ -14,15 +14,9 @@ import { useDispatch } from 'react-redux';
 import { login } from '../../redux/user-login';
 import { User } from '../data.type';
 import { isEmail, isPhone } from '../utils';
-import { loginPageLoader } from '../../loader';
-import { loginPageAction } from '../../action';
 
 import iconCloudHomeSvg from '../../assets/icon-cloud-home.svg';
 import Button from 'antd/es/button';
-
-export const action = loginPageAction;
-
-export const loader = loginPageLoader;
 
 const verifyCaptcha = async (data: { x: number }) => {
   if (data?.x && data.x > 87 && data.x < 93) {

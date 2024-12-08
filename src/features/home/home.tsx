@@ -13,9 +13,6 @@ import { User } from '../data.type';
 import { cleanStorage } from '../login/login';
 import { useState } from 'react';
 import ConfirmModal from '../modal/confirm-modal';
-import { homePageLoader } from '../../loader';
-
-export const loader = homePageLoader;
 
 const navList = ['/home'];
 const homeNavList = ['upload-file', 'device-control', 'user-list'];
