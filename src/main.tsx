@@ -8,14 +8,17 @@ import './instrument';
 import './styles/tailwind.css';
 import ConfigProvider from 'antd/es/config-provider';
 import { StrictMode } from 'react';
+import { apollo } from './apollo';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ConfigProvider theme={{ token: { colorPrimary: '#5f85c1' } }}>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </ConfigProvider>
+    <apollo.ApolloProvider client={apollo.client}>
+      <ConfigProvider theme={{ token: { colorPrimary: '#5f85c1' } }}>
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
+      </ConfigProvider>
+    </apollo.ApolloProvider>
   </StrictMode>
 );
 

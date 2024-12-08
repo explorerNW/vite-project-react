@@ -13,14 +13,37 @@ import { useRequest, useUpdateEffect } from 'ahooks';
 import socketIO, { sendToRMQ } from '../socket.io';
 import notification from 'antd/es/notification';
 import Button from 'antd/es/button';
+import { apollo } from '../../apollo';
+import { GET_USER } from '../../apollo.gql';
+import { ApolloError } from '@apollo/client/errors';
+import { NotificationInstance } from 'antd/es/notification/interface';
 
-export default function DeviceControl() {
+const useApolloFetchUser = () => {
+  const [data, setData] = useState<{ name: string }>({ name: '' });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<ApolloError>();
+  apollo.useQuery<{ getUser: { name: string } }>(GET_USER, {
+    fetchPolicy: 'cache-first',
+    defaultOptions: {
+      context: { headers: { admin: true } },
+      refetchWritePolicy: 'overwrite',
+    },
+    onCompleted: data => {
+      setData(user => {
+        return { ...user, name: data.getUser.name };
+      });
+      setLoading(false);
+    },
+    onError: e => {
+      setError(e);
+    },
+  });
+  return { data, loading, error };
+};
+
+const useRequestChipInfo = (notificationApi: NotificationInstance) => {
   const [chipInfo, setChipInfo] = useState<IChipInfo>({} as IChipInfo);
-  const [lightStatus, setLightStatus] = useState(false);
-  const online = useOnlineStatus();
-  const [notificationApi, contextHolder] = notification.useNotification();
-  const ref = useRef<{ mounted: boolean }>({ mounted: false });
-  const { loading: loagingChipInfo, refresh } = useRequest(getChipInfo, {
+  const { loading, refresh } = useRequest(getChipInfo, {
     loadingDelay: 200,
     debounceWait: 200,
     manual: true,
@@ -34,6 +57,20 @@ export default function DeviceControl() {
       });
     },
   });
+
+  return { chipInfo, loadingChipInfo: loading, refresh };
+};
+
+export default function DeviceControl() {
+  const [lightStatus, setLightStatus] = useState(false);
+  const online = useOnlineStatus();
+  const [notificationApi, contextHolder] = notification.useNotification();
+  const ref = useRef<{ mounted: boolean }>({ mounted: false });
+
+  const { chipInfo, loadingChipInfo, refresh } =
+    useRequestChipInfo(notificationApi);
+
+  const { data: userInfo } = useApolloFetchUser();
 
   const [message, setMessage] = useState('');
   const { runAsync: sentToRMQ } = useRequest(sendToRMQ, {
@@ -133,7 +170,7 @@ export default function DeviceControl() {
       <div>
         <Button
           onClick={async () => {
-            if (loagingChipInfo) {
+            if (loadingChipInfo) {
               return;
             }
             refresh();
@@ -141,7 +178,7 @@ export default function DeviceControl() {
         >
           fetch Chip Information
         </Button>
-        {loagingChipInfo ? (
+        {loadingChipInfo ? (
           <LoadingOutlined />
         ) : (
           <div className='flex flex-col'>
@@ -215,6 +252,10 @@ export default function DeviceControl() {
           >
             send
           </Button>
+        </div>
+        <div>
+          <span>graphql: </span>
+          <span>name: {userInfo.name}</span>
         </div>
       </div>
     </>
