@@ -1,10 +1,4 @@
-import {
-  getChipInfo,
-  getLightsStatus,
-  IChipInfo,
-  lightsDown,
-  lightsUp,
-} from './device-control.api';
+import { lightsDown, lightsUp } from './device-control.api';
 import { useEffect, useRef, useState } from 'react';
 import { useOnlineStatus } from '../utils';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -13,56 +7,13 @@ import { useRequest, useUpdateEffect } from 'ahooks';
 import socketIO, { sendToRMQ } from '../socket.io';
 import notification from 'antd/es/notification';
 import Button from 'antd/es/button';
-import { apollo } from '../../apollo';
-import { GET_USER } from '../../apollo.gql';
-import { ApolloError } from '@apollo/client/errors';
-import { NotificationInstance } from 'antd/es/notification/interface';
-
-const useApolloFetchUser = () => {
-  const [data, setData] = useState<{ name: string }>({ name: '' });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<ApolloError>();
-  apollo.useQuery<{ getUser: { name: string } }>(GET_USER, {
-    fetchPolicy: 'cache-first',
-    defaultOptions: {
-      context: { headers: { admin: true } },
-      refetchWritePolicy: 'overwrite',
-    },
-    onCompleted: data => {
-      setData(user => {
-        return { ...user, name: data.getUser.name };
-      });
-      setLoading(false);
-    },
-    onError: e => {
-      setError(e);
-    },
-  });
-  return { data, loading, error };
-};
-
-const useRequestChipInfo = (notificationApi: NotificationInstance) => {
-  const [chipInfo, setChipInfo] = useState<IChipInfo>({} as IChipInfo);
-  const { loading, refresh } = useRequest(getChipInfo, {
-    loadingDelay: 200,
-    debounceWait: 200,
-    manual: true,
-    onSuccess: chipIfo => {
-      setChipInfo(() => chipIfo);
-    },
-    onError: () => {
-      notificationApi.info({
-        message: '服务器-api异常',
-        description: '',
-      });
-    },
-  });
-
-  return { chipInfo, loadingChipInfo: loading, refresh };
-};
+import {
+  useApolloFetchUser,
+  useFetchLightStatus,
+  useRequestChipInfo,
+} from './device-control-handler';
 
 export default function DeviceControl() {
-  const [lightStatus, setLightStatus] = useState(false);
   const online = useOnlineStatus();
   const [notificationApi, contextHolder] = notification.useNotification();
   const ref = useRef<{ mounted: boolean }>({ mounted: false });
@@ -77,6 +28,13 @@ export default function DeviceControl() {
     manual: true,
     debounceWait: 200,
   });
+
+  const {
+    lightStatus,
+    toggle,
+    loading: loadingLightsStatus,
+    loadingLightsStatusAction,
+  } = useFetchLightStatus(notificationApi);
 
   useEffect(() => {
     if (!ref.current.mounted) {
@@ -107,26 +65,9 @@ export default function DeviceControl() {
         console.log('Disconnected');
       });
       ref.current.mounted = true;
+      loadingLightsStatusAction();
     }
-  }, [notificationApi]);
-
-  const { loading: loadingLightsStatus, run: loadingLightsStatusAction } =
-    useRequest(getLightsStatus, {
-      manual: true,
-      onError: () => {
-        notificationApi.info({
-          message: '服务器-api异常',
-          description: '',
-        });
-      },
-      onSuccess: res => {
-        setLightStatus(res === 1);
-      },
-    });
-
-  useEffect(() => {
-    loadingLightsStatusAction();
-  }, [loadingLightsStatusAction]);
+  }, [notificationApi, loadingLightsStatusAction]);
 
   const {
     loading: loadingLightsUp,
@@ -208,12 +149,7 @@ export default function DeviceControl() {
             </span>
           }
         </div>
-        <Button
-          className='w-[4rem]'
-          onClick={() => {
-            setLightStatus(status => !status);
-          }}
-        >
+        <Button className='w-[4rem]' onClick={toggle}>
           {lightStatus ? '关' : '开'} 灯
         </Button>
       </div>
