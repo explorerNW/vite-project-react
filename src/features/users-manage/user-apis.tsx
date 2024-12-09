@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { TCreateUser, TDeleteUser, TUpdateUser, User } from '../data.type';
 import { instance } from '../login/login.api';
-import environment from '../../environments/local.environment';
+import environment from '@/environments/local.environment';
 
 export const SSE_URL = `http://${environment.apiHost}/sse`;
 

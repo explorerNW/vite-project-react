@@ -8,12 +8,9 @@ import UserUpdate from './user-update-form';
 import { useMount, useRequest } from 'ahooks';
 import Search from 'antd/es/input/Search';
 import { CanvasTileTable } from '../utils';
-import { userListPageLoader } from '../../loader';
 import notification from 'antd/es/notification';
 import Button from 'antd/es/button';
 import Pagination from 'antd/es/pagination';
-
-export const loader = userListPageLoader;
 
 export interface ITableUser {
   key?: number;

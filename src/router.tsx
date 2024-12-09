@@ -11,7 +11,6 @@ import {
 } from './loader';
 import { devicePageAction, loginPageAction } from './action';
 import {
-  AuthGuard,
   DeviceControl,
   Home,
   SessionTimeout,
@@ -20,6 +19,7 @@ import {
   UploadFile,
   UserList,
 } from './module-lazy-load';
+import { AuthGuard } from './features/auth/guard';
 
 const router = createBrowserRouter([
   {

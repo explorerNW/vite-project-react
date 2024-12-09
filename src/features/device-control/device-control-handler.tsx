@@ -1,7 +1,7 @@
 import useRequest from 'ahooks/lib/useRequest';
 import { useCallback, useState } from 'react';
-import { apollo } from '../../apollo';
-import { GET_USER } from '../../apollo.gql';
+import { apollo } from '@/apollo';
+import { GET_USER } from '@/apollo.gql';
 import { ApolloError } from '@apollo/client/errors';
 import { NotificationInstance } from 'antd/es/notification/interface';
 import { getChipInfo, getLightsStatus, IChipInfo } from './device-control.api';
