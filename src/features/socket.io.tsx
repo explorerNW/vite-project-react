@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import { instance } from './login/login.api';
-import environment from '../environments/local.environment';
+import environment from '@/environments/local.environment';
 
 const socketIO = io(`${environment.apiHost}`);
 

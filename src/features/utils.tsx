@@ -183,7 +183,7 @@ export const CanvasTileTable = memo(function CanvasTileTable({
         setVisibleTiles(() => tiles);
       });
     }
-  }, [scrollTop]);
+  }, [scrollTop, containerHeight, data]);
 
   useEffect(() => {
     if (canvasRef.current) {

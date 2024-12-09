@@ -1,7 +1,7 @@
 import SliderCaptcha from 'rc-slider-captcha';
 import './login.scss';
-import ImageBg from '../../assets/1bg@2x.7146d57f.jpg';
-import ImagePuzzle from '../../assets/1puzzle@2x.png';
+import ImageBg from '@/assets/1bg@2x.7146d57f.jpg';
+import ImagePuzzle from '@/assets/1puzzle@2x.png';
 import { SetStateAction, useState } from 'react';
 import {
   Form,
@@ -15,7 +15,7 @@ import { login } from '../../redux/user-login';
 import { User } from '../data.type';
 import { isEmail, isPhone } from '../utils';
 
-import iconCloudHomeSvg from '../../assets/icon-cloud-home.svg';
+import iconCloudHomeSvg from '@/assets/icon-cloud-home.svg';
 import Button from 'antd/es/button';
 
 const verifyCaptcha = async (data: { x: number }) => {
@@ -28,13 +28,13 @@ const verifyCaptcha = async (data: { x: number }) => {
 const loginCheck = (
   name: string,
   password: string,
-  setShowSlicderCaptcha: {
+  setShowSliderCaptcha: {
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   }
 ) => {
   if (name && password) {
-    setShowSlicderCaptcha(true);
+    setShowSliderCaptcha(true);
   }
 };
 
@@ -46,7 +46,7 @@ export const cleanStorage = () => {
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showSlicderCaptcha, setShowSlicderCaptcha] = useState(false);
+  const [showSliderCaptcha, setShowSliderCaptcha] = useState(false);
   const submit = useSubmit();
   const res = useActionData() as {
     success: boolean;
@@ -162,7 +162,7 @@ export default function Login() {
               type='primary'
               className='float-end bg-[#5f85c1]'
               onClick={() => {
-                loginCheck(email, password, setShowSlicderCaptcha);
+                loginCheck(email, password, setShowSliderCaptcha);
               }}
             >
               登录
@@ -170,10 +170,10 @@ export default function Login() {
           </div>
         </div>
       </Form>
-      {showSlicderCaptcha ? (
+      {showSliderCaptcha ? (
         <div
           className='slider-capt-cha'
-          style={{ display: showSlicderCaptcha ? 'block' : 'none' }}
+          style={{ display: showSliderCaptcha ? 'block' : 'none' }}
         >
           <div className='back-drop'></div>
           <SliderCaptcha
@@ -186,7 +186,7 @@ export default function Login() {
             onVerify={async data => {
               const result = await verifyCaptcha(data);
               if (result) {
-                setShowSlicderCaptcha(false);
+                setShowSliderCaptcha(false);
                 submit(
                   { email, password },
                   { method: 'post', action: '/login' }

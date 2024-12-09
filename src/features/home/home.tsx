@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import './home.scss';
 import { useDispatch } from 'react-redux';
-import { currentUser, login, logout } from '../../redux/user-login';
+import { currentUser, login, logout } from '@/redux/user-login';
 import { User } from '../data.type';
 import { cleanStorage } from '../login/login';
 import { useState } from 'react';
