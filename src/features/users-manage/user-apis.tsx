@@ -10,13 +10,14 @@ export const createUser = async (
 ): Promise<
   AxiosResponse<{
     success: boolean;
-    message: { user_exist: boolean; user_id: string };
+    message: { user_exist: boolean; user_id: string; error: string };
   }>
 > => {
   return await instance
     .post('/user/create', user, { headers: { roles: ['admin'] } })
     .catch(e => {
-      throw new Error(e);
+      console.error(e);
+      return e;
     });
 };
 
@@ -34,7 +35,8 @@ export const updateUser = async (
       { headers: { roles: ['admin'] } }
     )
     .catch(e => {
-      throw new Error(e);
+      console.error(e);
+      return e;
     });
 };
 
@@ -45,7 +47,8 @@ export const deleteUser = async (
     .delete(`/user/${user.id}`, { headers: { roles: ['admin'] } })
     .then(res => res.data.success)
     .catch(e => {
-      throw new Error(e);
+      console.error(e);
+      return e;
     });
 };
 
@@ -58,7 +61,8 @@ export const fetchUsersList = async (
       headers: { roles: ['admin'] },
     })
     .catch(e => {
-      throw new Error(e);
+      console.error(e);
+      return e;
     });
 };
 
@@ -68,6 +72,7 @@ export const searchUser = async (
   return await instance
     .get(`/user/findByLike?value=${value}`, { headers: { roles: ['admin'] } })
     .catch(e => {
-      throw new Error(e);
+      console.error(e);
+      return e;
     });
 };
