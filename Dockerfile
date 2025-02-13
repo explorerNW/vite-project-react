@@ -10,14 +10,14 @@ COPY . /app
 
 # 安装依赖
 RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
-    yarn install --frozen-lockfile
+    --mount=type=bind,source=pnpm-lock.lock,target=pnpm-lock.lock \
+    --mount=type=cache,target=/root/.pnpm \
+    pnpm install --frozen-lockfile
 
 
 
 # 构建项目
-RUN yarn run build
+RUN pnpm run build
 
 # 使用Nginx作为生产环境的基础镜像
 FROM nginx:alpine
