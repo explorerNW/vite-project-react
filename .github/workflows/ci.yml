@@ -20,24 +20,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-          cache: 'pnpm'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Run tests
-        run: pnpm test --coverage
+        run: npm test --coverage
 
       - name: Build app
-        run: pnpm run build
+        run: npm run build
 
       - name: Deploy to Docker Hub
         run: |

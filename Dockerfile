@@ -8,6 +8,9 @@ WORKDIR /app
 # 将当前目录的内容复制到工作目录中
 COPY . /app
 
+# 全局安装 pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # 安装依赖
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
