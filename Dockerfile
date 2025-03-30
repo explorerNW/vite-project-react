@@ -8,8 +8,11 @@ WORKDIR /app
 # 将当前目录的内容复制到工作目录中
 COPY . /app
 
+# 复制 package.json 和 pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml ./
+
 # 全局安装 pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g pnpm
 
 # 安装依赖
 RUN --mount=type=bind,source=package.json,target=package.json \
