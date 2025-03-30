@@ -10,7 +10,7 @@ COPY . /app
 
 # 安装依赖
 RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=pnpm-lock.lock,target=pnpm-lock.lock \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
     --mount=type=cache,target=/root/.pnpm \
     pnpm install --frozen-lockfile
 
