@@ -34,5 +34,6 @@
             }
         ],
         "no-unused-vars": "error"
-    }
+    },
+    "excludedFiles": ["coverage/**", "dist/**", "node_modules/**"],
 }
