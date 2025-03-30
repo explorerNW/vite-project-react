@@ -39,4 +39,4 @@ jobs:
       - name: Deploy to Docker Hub
         run: |
           docker build -t vite-project-react .
-          docker push explorernw/vite-project-react:v1.0
+          docker push explorernw/vite-project-react:tagname
