@@ -30,6 +30,12 @@ jobs:
       - name: Build app
         run: npm run build
 
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
       - name: Deploy to Docker Hub
         run: |
           docker build -t your-image-name .
